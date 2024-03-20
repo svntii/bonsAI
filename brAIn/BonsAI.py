@@ -77,11 +77,12 @@ class BHistorian:
         if self.store is None:
             print("ERROR: No Store :(")
 
-        # promptEmb = self.store.emb.embed_query(prompt)
-        similarDocs = self.store.db.similarity_search(query=prompt)
-        prompt = " ".join([doc.page_content for doc in similarDocs[:k]])
-
         self.msgs.append({"role": "user", "content": prompt})
+        
+        similarDocs = self.store.db.similarity_search(query=prompt)
+        enrichedPrompt = " ".join([doc.page_content for doc in similarDocs[:k]])
+
+        self.msgs.append({"role": "user", "content": enrichedPrompt})
 
 
         result = self.soul.chat.completions.create(
