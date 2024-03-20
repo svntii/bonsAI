@@ -1,5 +1,8 @@
 from openai import OpenAI
 from BVectorStore import BVectorStore
+import yaml
+
+
 ### Private
 
 class _BHistorianOutput:
@@ -60,3 +63,18 @@ class BHistorianResponse:
     def __init__(self, response: str):
         
         self.response = response
+
+
+class BConfig:
+    def __init__(self, **kwargs):
+        for key, value in kwargs.items():
+            if isinstance(value, dict):
+                setattr(self, key, BConfig(**value))  # Recursively create nested Config objects
+            else:
+                setattr(self, key, value)
+
+    @staticmethod
+    def from_yaml(config_file):
+        with open(config_file, 'r') as file:
+            config = yaml.safe_load(file)
+        return BConfig(**config)
