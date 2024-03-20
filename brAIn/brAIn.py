@@ -4,6 +4,8 @@ from brAIn.BonsAI import *
 from dotenv import load_dotenv
 import os
 
+load_dotenv()
+
 CONFIG = "./config.yaml"
 
 '''
