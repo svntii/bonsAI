@@ -1,7 +1,13 @@
 from openai import OpenAI
-from BVectorStore import BVectorStore
 import yaml
 
+from langchain_community.document_loaders import TextLoader
+from langchain_openai import OpenAIEmbeddings
+from langchain_text_splitters import CharacterTextSplitter
+from langchain_text_splitters.base import TextSplitter
+
+from langchain_community.vectorstores.chroma import Chroma
+from langchain_core.embeddings import Embeddings
 
 ### Private
 
@@ -11,6 +17,42 @@ class _BHistorianOutput:
 
 
 ### PUBLIC
+
+
+class BVectorStore:
+    '''
+        bonsAI implementation of vector
+        responsble for 
+
+
+        reference: 
+        https://developer.dataiku.com/latest/tutorials/machine-learning/genai/nlp/gpt-lc-chroma-rag/index.html
+    
+    '''
+
+
+
+    def __init__(self, pathToText, model,  embeddings: Embeddings, textSplitter: TextSplitter = CharacterTextSplitter()) -> None:
+        
+        self.model = model
+        self.emb = embeddings    
+        self.ts = textSplitter
+
+        self.db = self.textLoad(pathToText,textSplitter=self.ts, embeddings=self.emb)
+        self.retriever = self.db.as_retriever()
+
+
+    def textLoad(self, path: str, textSplitter: TextSplitter, embeddings: Embeddings):
+
+        raw = TextLoader(path).load()
+        splitDocs = textSplitter.split_documents(raw)
+        db = Chroma.from_documents(documents=splitDocs, embedding=OpenAIEmbeddings())
+
+        return db
+    
+
+  
+
 
 class BHistorian:
 
@@ -35,9 +77,9 @@ class BHistorian:
         if self.store is None:
             print("ERROR: No Store :(")
 
-        promptEmb = self.store.emb.embed_query(prompt)
-        similarDocs = self.store.db.similarity_search(query=promptEmb)
-        prompt = " ".join([doc.text for doc in similarDocs[:k]])
+        # promptEmb = self.store.emb.embed_query(prompt)
+        similarDocs = self.store.db.similarity_search(query=prompt)
+        prompt = " ".join([doc.page_content for doc in similarDocs[:k]])
 
         self.msgs.append({"role": "user", "content": prompt})
 
@@ -78,3 +120,5 @@ class BConfig:
         with open(config_file, 'r') as file:
             config = yaml.safe_load(file)
         return BConfig(**config)
+
+

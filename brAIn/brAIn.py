@@ -1,9 +1,6 @@
 # brAIn.py
 
-
-from BHistorian import *
-from BVectorStore import *  
-
+from BonsAI import *
 from dotenv import load_dotenv
 import os
 
@@ -21,7 +18,7 @@ CONFIG = "../config.yaml"
 
 
 def main():
-    load_dotenv()
+    load_dotenv(dotenv_path="../.env")
     config = BConfig.from_yaml(CONFIG)
     
 
@@ -31,14 +28,18 @@ def main():
         model=OpenAI(api_key=os.getenv('OPENAI_API_KEY'))
     )
 
+    print("historian made")
     vectorStore = BVectorStore(
         pathToText=config.vectorStore.toText,
         model=historian,
+        embeddings=OpenAIEmbeddings()
     )
+    print("store loaded")
+
 
     historian.load_store(vectorStore)
-    reply = historian.ask("Where is steds?")
-    print(reply)
+    reply = historian.ask("Name the Leadership of STEDS hall!")
+    print(historian.msgs)
 
 
 
