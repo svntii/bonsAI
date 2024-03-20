@@ -2,7 +2,11 @@
 
 
 from BHistorian import *
-from BVectorStore import *
+from BVectorStore import *  
+
+from dotenv import load_dotenv
+import os
+
 
 '''
 # TODO
@@ -16,7 +20,16 @@ from BVectorStore import *
 
 
 def main():
-    pass
+    load_dotenv()
+
+    historian = BHistorian("Edward", OpenAI(api_key=os.getenv('OPENAI_API_KEY')))
+    vectorStore = BVectorStore(
+        pathToText="SOMETHING",
+        model=historian,
+    )
+
+
+
 
 
 if __name__ == "__main__":
