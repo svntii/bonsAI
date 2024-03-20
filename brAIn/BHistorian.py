@@ -31,7 +31,7 @@ class BHistorian:
     def load_store(self, store: BVectorStore):
         self.store = store
 
-    def userPrompt(self, prompt: str, k=5) -> any:        
+    def ask(self, prompt: str, k=5) -> any:        
         if self.store is None:
             print("ERROR: No Store :(")
 

@@ -36,6 +36,10 @@ def main():
         model=historian,
     )
 
+    historian.load_store(vectorStore)
+    reply = historian.ask("Where is steds?")
+    print(reply)
+
 
 
 
