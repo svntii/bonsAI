@@ -11,12 +11,14 @@ class _BHistorianOutput:
 
 class BHistorian:
 
-    def __init__(self, name, model: OpenAI) -> None:
+    def __init__(self, name, systemMessage, model: OpenAI) -> None:
         # TODO try maybe llama 
         
         self.name = name
         self.soul = model
         self.store = None
+        self.sysMes = systemMessage
+        self.msgs = [{"role": "system", "content": self.sysMes}]
     
 
     def getModel(self):
@@ -34,12 +36,21 @@ class BHistorian:
         similarDocs = self.store.db.similarity_search(query=promptEmb)
         prompt = " ".join([doc.text for doc in similarDocs[:k]])
 
+        self.msgs.append({"role": "user", "content": prompt})
+
+
         result = self.soul.chat.completions.create(
             model="gpt-3.5-turbo",
-            messages=prompt # TODO: LOOK OVER
+            messages=self.msgs # TODO: LOOK OVER
         )
+        reply = result.choices[0].message.content        
+        self.msgs.append({"role": "assistant", "content": reply})
 
-        return result.choices[0].message.content
+        return reply
+
+    def reset(self):
+        self.msgs = []
+        self.msgs.append({"role": "system", "content": self.sysMes})
 
 class BHistorianInput:
     pass
