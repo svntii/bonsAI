@@ -44,7 +44,7 @@ class BVectorStore:
 
     def textLoad(self, path: str, textSplitter: TextSplitter, embeddings: Embeddings):
 
-        raw = TextLoader(path).load()
+        raw = TextLoader(path, encoding="utf-8").load()
         splitDocs = textSplitter.split_documents(raw)
         db = Chroma.from_documents(documents=splitDocs, embedding=OpenAIEmbeddings())
 
