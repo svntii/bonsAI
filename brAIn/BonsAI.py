@@ -77,7 +77,7 @@ class BHistorian:
         self.msgs.append({"role": "assistant", "content": prompt})
 
         result = self.soul.chat.completions.create(
-            model="gpt-3.5-turbo",
+            model="gpt-4-turbo-preview",
             messages=self.msgs # TODO: LOOK OVER
         )
         reply = result.choices[0].message.content        
