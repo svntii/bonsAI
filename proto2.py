@@ -34,7 +34,7 @@ class GUI(tk.Tk):
         button1 = tk.Button(button_frame, text="What is St. Edwards?", command=lambda: self.sendMessage("What is St. Edwards?"))
         button1.grid(row=0, column=0, padx=5, pady=5)
 
-        button2 = tk.Button(button_frame, text="Who is Fr. Ralph?", command=lambda: self.sendMessage("Who is Fr. Ralph?"))
+        button2 = tk.Button(button_frame, text="Who is Fr. Ralph Haag?", command=lambda: self.sendMessage("Who is Fr. Ralph Haag?"))
         button2.grid(row=0, column=1, padx=5, pady=5)
 
         button3 = tk.Button(button_frame, text="What has happened this week?", command=lambda: self.sendMessage("What's happened the week of March 18, 2024?"))

@@ -80,10 +80,24 @@ class BHistorian:
         self.msgs.append({"role": "user", "content": prompt})
         
         similarDocs = self.store.db.similarity_search(query=prompt)
+
+        print()
+        print("similar docs:")
+        print(similarDocs)
+
         enrichedPrompt = " ".join([doc.page_content for doc in similarDocs[:k]])
 
-        self.msgs.append({"role": "user", "content": enrichedPrompt})
+        print()
+        print("enriched prompt:")
+        print(enrichedPrompt)
 
+        self.msgs.append({"role": "user", "content": "Additional information and context has been provided to answer the user's question:\n" + enrichedPrompt})
+
+        for msg in self.msgs:
+            print("\t", end="")
+            print(msg["role"])
+            print(msg["content"])
+            print()
 
         result = self.soul.chat.completions.create(
             model="gpt-3.5-turbo",

@@ -32,9 +32,12 @@ def demoBot():
     vectorStore = BVectorStore(
         pathToText=config.vectorStore.toText,
         model=historian,
-        embeddings=OpenAIEmbeddings()
+        embeddings=OpenAIEmbeddings(),
+        textSplitter=CharacterTextSplitter(chunk_size=1000, separator="\n")
     )
     historian.load_store(vectorStore)
+
+    # breakpoint()
 
     return historian
 
