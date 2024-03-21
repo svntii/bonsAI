@@ -73,6 +73,19 @@ class BHistorian:
     def load_store(self, store: BVectorStore):
         self.store = store
 
+    def system_ask(self, prompt):
+        self.msgs.append({"role": "assistant", "content": prompt})
+
+        result = self.soul.chat.completions.create(
+            model="gpt-3.5-turbo",
+            messages=self.msgs # TODO: LOOK OVER
+        )
+        reply = result.choices[0].message.content        
+        self.msgs.append({"role": "assistant", "content": reply})
+
+        return reply
+
+
     def ask(self, prompt: str, k=5) -> any:        
         if self.store is None:
             print("ERROR: No Store :(")
