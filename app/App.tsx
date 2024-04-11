@@ -22,7 +22,10 @@ Parse.setAsyncStorage(AsyncStorage);
 
 // Imports
 import { ThemeProvider } from '@providers/ThemeContext';
-import Login from "@screens/Login";
+
+import { Provider } from 'react-redux';
+import { ChatStore } from '@providers/ChatStore';
+import Header from '@features/Header/Header';
 
 
 function App(): React.JSX.Element {
@@ -35,7 +38,7 @@ function App(): React.JSX.Element {
 
   return (
     <SafeAreaView style={backgroundStyle}>
-      <Login />
+      <Header />
     </SafeAreaView>
   );
 }
@@ -43,7 +46,9 @@ function App(): React.JSX.Element {
 export default () => {
   return (
     <ThemeProvider>
-      <App />
+      <Provider store={ChatStore}>
+        <App />
+      </Provider>
     </ThemeProvider>
   );
 }

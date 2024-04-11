@@ -3,7 +3,7 @@ import React from 'react';
 import { View } from 'react-native';
 import BonsaiStyles from "@theme/BonsaiStyles"
 import LoginHeader from '@features/Login/LoginHeader';
-import LoginField from '@features/LoginField';
+import LoginField from '@features/Login/LoginField';
 
 const Login = () => {
     return(
