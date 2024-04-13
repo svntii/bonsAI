@@ -22,10 +22,16 @@ Parse.setAsyncStorage(AsyncStorage);
 
 // Imports
 import { ThemeProvider } from '@providers/ThemeContext';
+import { NavigationContainer } from '@react-navigation/native';
+import { createDrawerNavigator } from '@react-navigation/drawer';
+const Drawer = createDrawerNavigator();
+
+
 
 import { Provider } from 'react-redux';
 import { ChatStore } from '@providers/ChatStore';
 import Header from '@features/Header/Header';
+import Login from '@screens/Login';
 
 
 function App(): React.JSX.Element {
@@ -38,7 +44,11 @@ function App(): React.JSX.Element {
 
   return (
     <SafeAreaView style={backgroundStyle}>
-      <Header />
+      <NavigationContainer>
+        <Drawer.Navigator initialRouteName='Login'>
+          <Drawer.Screen name='Login' component={Login} />
+        </Drawer.Navigator>
+      </NavigationContainer>
     </SafeAreaView>
   );
 }
