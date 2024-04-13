@@ -4,7 +4,7 @@
       "paths": {
         "src/*": ["./src/*"],
         "api/*": ["./src/api/*"],
-        "assets/*": ["./src/assets/*"],
+        "navigation/*": ["./src/navigation/*"],
         "features/*": ["./src/features/*"],
         "providers/*": ["./src/providers/*"],
         "screens/*": ["./src/screens/*"],

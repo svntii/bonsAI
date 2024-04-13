@@ -1,23 +1,19 @@
-
-
 export enum ChatSender {
-    User = "User",
-    Bot = "Bot",
+  User = 'User',
+  Bot = 'Bot',
 }
 
 export interface ChatBubbleProps {
-    message: string;
-    sender: ChatSender;
+  message: string;
+  sender: ChatSender;
 }
 
 export interface ChatState {
-    chats: Record<string, ChatBubbleProps[]>;
+  chats: Record<string, ChatBubbleProps[]>;
 }
 
 export interface ChatWindowProps {
-    chatId: string;
+  chatId: string;
 }
 
-export interface ChatListProps {
-    
-}
+export interface ChatListProps {}

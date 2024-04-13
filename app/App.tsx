@@ -1,19 +1,13 @@
 /**
  * React Native App
- * 
  *
  * @format
  */
 
 import React from 'react';
-import {
-  SafeAreaView,
-  useColorScheme,
-} from 'react-native';
+import {SafeAreaView, useColorScheme} from 'react-native';
 
-import {
-  Colors,
-} from 'react-native/Libraries/NewAppScreen';
+import {Colors} from 'react-native/Libraries/NewAppScreen';
 
 // Back4App
 import AsyncStorage from '@react-native-async-storage/async-storage';
@@ -21,18 +15,10 @@ import Parse from 'parse/react-native';
 Parse.setAsyncStorage(AsyncStorage);
 
 // Imports
-import { ThemeProvider } from '@providers/ThemeContext';
-import { NavigationContainer } from '@react-navigation/native';
-import { createDrawerNavigator } from '@react-navigation/drawer';
-const Drawer = createDrawerNavigator();
-
-
-
-import { Provider } from 'react-redux';
-import { ChatStore } from '@providers/ChatStore';
-import Header from '@features/Header/Header';
-import Login from '@screens/Login';
-
+import {ThemeProvider} from '@providers/ThemeContext';
+import {Provider} from 'react-redux';
+import {ChatStore} from '@providers/ChatStore';
+import MainNavigation from 'src/navigation/navigation';
 
 function App(): React.JSX.Element {
   const isDarkMode = useColorScheme() === 'dark';
@@ -44,11 +30,7 @@ function App(): React.JSX.Element {
 
   return (
     <SafeAreaView style={backgroundStyle}>
-      <NavigationContainer>
-        <Drawer.Navigator initialRouteName='Login'>
-          <Drawer.Screen name='Login' component={Login} />
-        </Drawer.Navigator>
-      </NavigationContainer>
+      <MainNavigation />
     </SafeAreaView>
   );
 }
@@ -61,4 +43,4 @@ export default () => {
       </Provider>
     </ThemeProvider>
   );
-}
+};

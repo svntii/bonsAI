@@ -1,10 +1,9 @@
 // LoginField.tsx
-import React, { useState } from 'react';
-import { TextInput, Button, View } from 'react-native';
-import BonsaiStyles from "@theme/BonsaiStyles"
+import React, {useState} from 'react';
+import {TextInput, Button, View} from 'react-native';
+import BonsaiStyles from '@theme/BonsaiStyles';
 
-
-const LoginField = () => {
+const LoginField = (navigation: any) => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
 
@@ -28,10 +27,7 @@ const LoginField = () => {
         onChangeText={setPassword}
         secureTextEntry
       />
-      <Button
-        title="Login"
-        onPress={handleLogin}
-      />
+      <Button title="Login" onPress={handleLogin} />
     </View>
   );
 };

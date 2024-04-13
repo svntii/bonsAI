@@ -1,26 +1,25 @@
 // ThemeContext.tsx
-import React, { createContext, useState, ReactNode } from 'react';
+import React, {createContext, useState, ReactNode} from 'react';
 
 export const ThemeContext = createContext({
-    isDarkMode: false,
-    toggle: () => {},
+  isDarkMode: false,
+  toggle: () => {},
 });
 
 interface ThemeProviderProps {
-    children: ReactNode;
-
+  children: ReactNode;
 }
 
-export const ThemeProvider: React.FC<ThemeProviderProps> = ({ children }) => {
-    const [isDarkMode, setIsDarkMode] = useState(false);
+export const ThemeProvider: React.FC<ThemeProviderProps> = ({children}) => {
+  const [isDarkMode, setIsDarkMode] = useState(false);
 
-    const toggle = () => {
-        setIsDarkMode(!isDarkMode);
-    };
+  const toggle = () => {
+    setIsDarkMode(!isDarkMode);
+  };
 
-    return(
-        <ThemeContext.Provider value={{ isDarkMode, toggle }}>
-            {children}
-        </ThemeContext.Provider>
-    );
-}
+  return (
+    <ThemeContext.Provider value={{isDarkMode, toggle}}>
+      {children}
+    </ThemeContext.Provider>
+  );
+};

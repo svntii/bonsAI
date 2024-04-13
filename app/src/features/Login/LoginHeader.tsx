@@ -1,14 +1,11 @@
 // LoginHeader.tsx
 
-
-
 import React from 'react';
-import { View, Text, StyleSheet } from 'react-native';
-import BonsaiStyles from "@theme/BonsaiStyles"
+import {View, Text} from 'react-native';
 
 const LoginHeader = () => {
   return (
-    <View >
+    <View>
       <Text>BonsAI</Text>
     </View>
   );
