@@ -1,7 +1,7 @@
 from fastapi import APIRouter, Response, Body, status
 import jsonschema
 from backend.schema import PROMPT_SCHEMA
-from backend.agent import llm
+from backend.agent import chain
 
 router = APIRouter(
     prefix="/chat"
@@ -22,8 +22,12 @@ def invoke_agent(response: Response, body: dict = Body(...)):
         response.status_code = status.HTTP_400_BAD_REQUEST
         return {"message": error.message}
     
+    response = chain.invoke({"input": body["prompt"]})
+
+    print(response)
+
     return {
-        "completion": llm.invoke(body["prompt"])
+        "completion": response.content
     }
     
 
