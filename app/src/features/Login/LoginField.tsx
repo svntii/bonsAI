@@ -3,7 +3,7 @@ import React, {useState} from 'react';
 import {TextInput, Button, View} from 'react-native';
 import BonsaiStyles from '@theme/BonsaiStyles';
 
-const LoginField = (navigation: any) => {
+const LoginField = () => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
 

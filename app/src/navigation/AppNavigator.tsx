@@ -4,7 +4,7 @@
 
 import React from 'react';
 import {createDrawerNavigator} from '@react-navigation/drawer';
-import Home from '@screens/Home/Home';
+import Chat from '@screens/Home/Chat';
 
 const Drawer = createDrawerNavigator();
 
@@ -13,8 +13,8 @@ const AppNavigator = () => {
     <Drawer.Navigator initialRouteName="Home">
       <Drawer.Screen
         name="Home"
-        component={Home}
-        options={{headerShown: true, drawerLabel: 'Home', headerTitle: ''}}
+        component={Chat}
+        options={{headerShown: true, drawerLabel: 'Chat', headerTitle: ''}}
       />
     </Drawer.Navigator>
   );
