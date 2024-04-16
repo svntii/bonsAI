@@ -18,6 +18,8 @@
     "@reduxjs/toolkit": "^2.2.3",
     "@rneui/themed": "^4.0.0-rc.8",
     "@types/react-native-vector-icons": "^6.4.18",
+    "axios": "^1.6.8",
+    "dotenv": "^16.4.5",
     "parse": "^5.0.0",
     "react": "18.2.0",
     "react-native": "0.73.6",
