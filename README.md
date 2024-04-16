@@ -1,1 +1,3 @@
 # bonsAI
+
+python -m backend
