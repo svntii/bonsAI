@@ -1,11 +1,8 @@
 .env
-<<<<<<< HEAD
 
 app/__tests__
 
 # Android
 app/Android/build/
-=======
 __pycache__
 venv
->>>>>>> main
