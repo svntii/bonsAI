@@ -4,3 +4,7 @@ pyyaml
 langchain
 langchain-openai
 chromadb
+
+fastapi
+uvicorn
+jsonschema
