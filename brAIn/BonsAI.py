@@ -44,7 +44,7 @@ class BVectorStore:
 
     def textLoad(self, path: str, textSplitter: TextSplitter, embeddings: Embeddings):
 
-        raw = TextLoader(path).load()
+        raw = TextLoader(path, encoding="utf-8").load()
         splitDocs = textSplitter.split_documents(raw)
         db = Chroma.from_documents(documents=splitDocs, embedding=OpenAIEmbeddings())
 
@@ -73,6 +73,19 @@ class BHistorian:
     def load_store(self, store: BVectorStore):
         self.store = store
 
+    def system_ask(self, prompt):
+        self.msgs.append({"role": "assistant", "content": prompt})
+
+        result = self.soul.chat.completions.create(
+            model="gpt-4-turbo-preview",
+            messages=self.msgs # TODO: LOOK OVER
+        )
+        reply = result.choices[0].message.content        
+        self.msgs.append({"role": "assistant", "content": reply})
+
+        return reply
+
+
     def ask(self, prompt: str, k=5) -> any:        
         if self.store is None:
             print("ERROR: No Store :(")
@@ -80,10 +93,24 @@ class BHistorian:
         self.msgs.append({"role": "user", "content": prompt})
         
         similarDocs = self.store.db.similarity_search(query=prompt)
+
+        print()
+        print("similar docs:")
+        print(similarDocs)
+
         enrichedPrompt = " ".join([doc.page_content for doc in similarDocs[:k]])
 
-        self.msgs.append({"role": "user", "content": enrichedPrompt})
+        print()
+        print("enriched prompt:")
+        print(enrichedPrompt)
 
+        self.msgs.append({"role": "user", "content": "Additional information and context has been provided to answer the user's question:\n" + enrichedPrompt})
+
+        for msg in self.msgs:
+            print("\t", end="")
+            print(msg["role"])
+            print(msg["content"])
+            print()
 
         result = self.soul.chat.completions.create(
             model="gpt-3.5-turbo",
