@@ -1,4 +1,4 @@
-import axios, { AxiosInstance } from 'axios';
+import axios, {AxiosInstance} from 'axios';
 
 const backendUrl = process.env.URL;
 const backendPort = process.env.PORT;
@@ -13,7 +13,7 @@ const axiosInstance: AxiosInstance = axios.create({
   baseURL,
   timeout: 10000, // 10 seconds
   headers: {
-    'Content-Type': 'application/json', 
+    'Content-Type': 'application/json',
   },
 });
 

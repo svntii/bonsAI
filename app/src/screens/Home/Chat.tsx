@@ -9,28 +9,43 @@
  *  Currently Only Supports one Chat Store
  */
 
-import React, {useState, useCallback, useEffect} from 'react';
+import {useAppDispatch, useAppSelector} from '@providers/ChatStore';
+import React, {useCallback, useEffect} from 'react';
 import {View, StyleSheet} from 'react-native';
-import {GiftedChat} from 'react-native-gifted-chat';
+import {GiftedChat, IMessage} from 'react-native-gifted-chat';
+import {
+  addMessage,
+  getConversation,
+} from '../../state/conversation/conversationSlice';
+import {ChatScreenRouteProp} from '@T/types';
 
-export default function Chat() {
-  const [messages, setMessages] = useState([]);
+export default function Chat({route}: {route: ChatScreenRouteProp}) {
+  const chatId = route.params.chatId;
+  const currentConversation = useAppSelector(
+    state => state.conversation.currentConversation,
+  );
+  const dispatch = useAppDispatch();
 
   useEffect(() => {
-    setMessages([]);
-  }, []);
+    dispatch(getConversation({id: chatId}));
+  }, [chatId, dispatch]);
 
-  const onSend = useCallback((messages = []) => {
-    setMessages(previousMessages =>
-      GiftedChat.append(previousMessages, messages),
-    );
-  }, []);
+  const onSend = useCallback(
+    (messages: IMessage[] = []) => {
+      messages.forEach(message => {
+        dispatch(addMessage({conversationId: chatId, message}));
+      });
+    },
+    [dispatch, chatId],
+  );
 
   return (
     <View style={styles.container}>
       <GiftedChat
-        messages={messages}
-        onSend={messages => onSend(messages)}
+        messages={currentConversation?.messages}
+        onSend={messages => {
+          console.log(messages);
+        }}
         user={{
           _id: 1,
         }}

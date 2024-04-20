@@ -5,8 +5,9 @@ import {NavigationContainer} from '@react-navigation/native';
 import {createStackNavigator} from '@react-navigation/stack';
 import Login from '@screens/Login';
 import AppNavigator from './AppNavigator';
+import {RootStackParamList} from '@T/types';
 
-const Stack = createStackNavigator();
+const Stack = createStackNavigator<RootStackParamList>();
 
 const MainNavigation = () => {
   const isSignedIn = true;
