@@ -17,7 +17,7 @@ import {
   addMessage,
   getConversation,
 } from '../../state/conversation/conversationSlice';
-import {ChatScreenRouteProp} from '@T/types';
+import chatApi from '@api/chatApi';
 
 export default function Chat() {
   // const chatId = route.params.chatId;
@@ -27,11 +27,35 @@ export default function Chat() {
   const chatId = currentConversation.id;
   const dispatch = useAppDispatch();
 
-  const chatroom: IMessage[] = [];
-
   useEffect(() => {
     dispatch(getConversation({id: chatId}));
   }, [chatId, dispatch]);
+
+  const receivedMessage = useCallback(
+    (message: string) => {
+      // call to api to get messages
+      chatApi
+        .postChatMessage(chatId, message)
+        .then(response => {
+          // Handle the response
+          const receivedMessage: IMessage = {
+            _id: response.data._id,
+            text: response.data.text,
+            createdAt: new Date(response.data.createdAt),
+            user: response.data.user,
+          };
+          dispatch(
+            addMessage({conversationId: chatId, message: receivedMessage}),
+          );
+          dispatch(getConversation({id: chatId}));
+        })
+        .catch(error => {
+          // Handle the error
+          console.error(error);
+        });
+    },
+    [dispatch, chatId],
+  );
 
   const onSend = useCallback(
     (messages: IMessage[] = []) => {

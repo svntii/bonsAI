@@ -32,4 +32,3 @@ export type RootStackParamList = {
   LoggedIn: undefined;
   SignIn: undefined;
 };
-export type ChatScreenRouteProp = RouteProp<RootStackParamList, 'Chat'>;
