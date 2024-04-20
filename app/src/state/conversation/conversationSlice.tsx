@@ -1,15 +1,15 @@
 import {createSlice, PayloadAction} from '@reduxjs/toolkit';
 import {Conversation} from '@T/types';
-import {IMessage} from 'react-native-gifted-chat';
+import {IMessage, User} from 'react-native-gifted-chat';
 
 interface ConversationState {
   conversations: Record<string, Conversation>;
-  currentConversation: Conversation | null;
+  currentConversation: Conversation;
 }
 
 const initialState: ConversationState = {
-  conversations: {},
-  currentConversation: null,
+  currentConversation: {id: '0', messages: []},
+  conversations: {current: {id: '0', messages: []}},
 };
 
 // Action Payloads
@@ -20,9 +20,8 @@ interface AddConversationPayload {
 
 interface AddMessagePayload {
   conversationId: string;
-  message: IMessage; // TODO
+  message: IMessage;
 }
-
 interface GetConversationPayload {
   id: string;
 }
@@ -42,22 +41,48 @@ const ConversationSlice = createSlice({
     },
     addMessage: (state, action: PayloadAction<AddMessagePayload>) => {
       const conversation = state.conversations[action.payload.conversationId];
-      return {
-        ...state,
-        conversations: {
-          ...state.conversations,
-          [action.payload.conversationId]: {
-            ...conversation,
-            messages: [...conversation.messages, action.payload.message],
+      if (conversation) {
+        return {
+          ...state,
+          conversations: {
+            ...state.conversations,
+            [action.payload.conversationId]: {
+              ...conversation,
+              messages: [action.payload.message, ...conversation.messages],
+            },
           },
-        },
-      };
+        };
+      } else {
+        return {
+          ...state,
+          conversations: {
+            ...state.conversations,
+            [action.payload.conversationId]: {
+              id: action.payload.conversationId,
+              messages: [action.payload.message],
+            },
+          },
+        };
+      }
     },
     getConversation: (state, action: PayloadAction<GetConversationPayload>) => {
-      return {
-        ...state,
-        currentConversation: state.conversations[action.payload.id],
-      };
+      if (!state.conversations[action.payload.id]) {
+        return {
+          ...state,
+          conversations: {
+            ...state.conversations,
+            [action.payload.id]: {
+              id: action.payload.id,
+              messages: [],
+            },
+          },
+        };
+      } else {
+        return {
+          ...state,
+          currentConversation: state.conversations[action.payload.id],
+        };
+      }
     },
   },
 });

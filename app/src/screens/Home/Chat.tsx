@@ -19,12 +19,15 @@ import {
 } from '../../state/conversation/conversationSlice';
 import {ChatScreenRouteProp} from '@T/types';
 
-export default function Chat({route}: {route: ChatScreenRouteProp}) {
-  const chatId = route.params.chatId;
+export default function Chat() {
+  // const chatId = route.params.chatId;
   const currentConversation = useAppSelector(
     state => state.conversation.currentConversation,
   );
+  const chatId = currentConversation.id;
   const dispatch = useAppDispatch();
+
+  const chatroom: IMessage[] = [];
 
   useEffect(() => {
     dispatch(getConversation({id: chatId}));
@@ -33,7 +36,17 @@ export default function Chat({route}: {route: ChatScreenRouteProp}) {
   const onSend = useCallback(
     (messages: IMessage[] = []) => {
       messages.forEach(message => {
-        dispatch(addMessage({conversationId: chatId, message}));
+        const serializableMessage = {
+          ...message,
+          createdAt: message.createdAt.valueOf(),
+        };
+        dispatch(
+          addMessage({
+            conversationId: chatId,
+            message: serializableMessage,
+          }),
+        );
+        dispatch(getConversation({id: chatId}));
       });
     },
     [dispatch, chatId],
@@ -42,9 +55,9 @@ export default function Chat({route}: {route: ChatScreenRouteProp}) {
   return (
     <View style={styles.container}>
       <GiftedChat
-        messages={currentConversation?.messages}
+        messages={currentConversation.messages}
         onSend={messages => {
-          console.log(messages);
+          onSend(messages);
         }}
         user={{
           _id: 1,

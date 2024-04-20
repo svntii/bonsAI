@@ -21,7 +21,7 @@ const AppNavigator = () => {
       <Drawer.Screen
         name="Chat"
         component={Chat}
-        initialParams={{chatId: chatIds[0] || null}}
+        // initialParams={{chatId: chatIds[0] || null}}
         options={{headerShown: true, drawerLabel: 'Chat', headerTitle: ''}}
       />
     </Drawer.Navigator>
