@@ -18,6 +18,7 @@ import {
   getConversation,
 } from '../../state/conversation/conversationSlice';
 import chatApi from '@api/chatApi';
+import {ChatRequestDTO} from '@api/dto/ChatDTO';
 
 export default function Chat() {
   // const chatId = route.params.chatId;
@@ -34,19 +35,17 @@ export default function Chat() {
   const receivedMessage = useCallback(
     (message: string) => {
       // call to api to get messages
+      const request: ChatRequestDTO = {
+        id: chatId,
+        prompt: message,
+      };
+
       chatApi
-        .postChatMessage(chatId, message)
+        .postChatMessage(request)
         .then(response => {
           // Handle the response
-          const receivedMessage: IMessage = {
-            _id: response.data._id,
-            text: response.data.text,
-            createdAt: new Date(response.data.createdAt),
-            user: response.data.user,
-          };
-          dispatch(
-            addMessage({conversationId: chatId, message: receivedMessage}),
-          );
+          // dispatch(addMessage({}))
+
           dispatch(getConversation({id: chatId}));
         })
         .catch(error => {

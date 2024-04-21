@@ -1,9 +1,16 @@
-export interface ChatDTO {
-  detail: {
-    type: string;
-    loc: string[];
-    msg: string;
-    input: null;
-    url: string;
-  };
+export interface ChatResponseDTO {
+  completion: string;
+}
+
+export interface ChatRequestDTO {
+  id: string;
+  prompt: string;
+}
+
+export interface VectorAddRequestDTO {
+  vectors: string[];
+}
+
+export interface VectorAddResponseDTO {
+  message: string;
 }

@@ -1,4 +1,4 @@
-import axiosInstance from '@/utils/axiosInstance';
+import axiosInstance from '@utils/axiosInstance';
 
 const initChatApi = {
   postChatMessage: async (message: string): Promise<any> => {
