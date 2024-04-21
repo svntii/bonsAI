@@ -1,6 +1,9 @@
 export interface ChatResponseDTO {
-  completion: string;
+  id: number;
+  responseText: string;
+  userResponseSuggestions: string[];
 }
+
 
 export interface ChatRequestDTO {
   id: string;
