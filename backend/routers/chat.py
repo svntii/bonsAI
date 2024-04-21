@@ -28,18 +28,19 @@ def invoke_agent(response: Response, body: dict = Body(...)):
         response.status_code = status.HTTP_400_BAD_REQUEST
         return {"message": error.message}
     
-    response = chain.invoke({"input": body["prompt"]})
+    # response = chain.invoke({"input": body["prompt"]})
 
     # print(response)
 
     # return {
     #     "completion": response.content
     # }
-    response_id = 1
-    response_text = response.content
-    suggestions = ["Successful initial response", "Suggestion 1", "Suggestion 2", "Suggestion 3"]
-    
-    return ChatResponse(id=response_id, response_text=response_text, suggestions=suggestions)
+    response = {
+        'id' : 1,
+        'responseText' : "Successful response with id",
+        'userResponseSuggestions' : ["Suggestion 1", "Suggestion 2", "Suggestion 3"]
+    }
+    return ChatResponse(**response)
 
 @router.post("/{id}", response_model=ChatResponse)
 def invoke_agent_with_id(response: Response, id: int, body: dict = Body(...)):
@@ -50,9 +51,10 @@ def invoke_agent_with_id(response: Response, id: int, body: dict = Body(...)):
         response.status_code = status.HTTP_400_BAD_REQUEST
         return {"message": error.message}
     
-    response = chain.invoke({"input": body["prompt"]})
-
-    response_text = response.content
-    suggestions = ["Succesful response with id", "Suggestion 1", "Suggestion 2", "Suggestion 3"]
-    
-    return ChatResponse(id=id, responseText=response_text, userResponseSuggestions=suggestions)
+    # response = chain.invoke({"input": body["prompt"]})
+    response = {
+        'id' : id,
+        'responseText' : "Successful response with id",
+        'userResponseSuggestions' : ["Suggestion 1", "Suggestion 2", "Suggestion 3"]
+    }
+    return ChatResponse(**response)
