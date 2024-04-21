@@ -1,77 +1,43 @@
-from fastapi import APIRouter, HTTPException, Body
-from openai import OpenAI
-from langchain_community.document_loaders import TextLoader
+from fastapi import FastAPI, HTTPException, Request
+from langchain_pinecone import PineconeVectorStore
 from langchain_openai import OpenAIEmbeddings
-from langchain_text_splitters import CharacterTextSplitter
-from langchain_community.vectorstores.chroma import Chroma
-from langchain_core.embeddings import Embeddings
+from pydantic import BaseModel
 
-from dotenv import load_dotenv
 import os
-import httpx
 
-load_dotenv()
-openai_api_key = os.getenv("OPENAI_API_KEY")
-if not openai_api_key:
-    raise ValueError("No key found")
+app = FastAPI()
 
-path_to_text_file = "data/steds.txt"
-router = APIRouter(prefix="/vectorstore")
+# Initialize PineconeVectorStore
+index_name = "my-index"
+embeddings = OpenAIEmbeddings(api_key=os.getenv('OPENAI_API_KEY'))
+vectorstore = PineconeVectorStore(index_name=index_name, embedding=embeddings)
 
-'''
-Chroma methods:
-https://api.python.langchain.com/en/latest/vectorstores/langchain_community.vectorstores.chroma.Chroma.html#langchain_community.vectorstores.chroma.Chroma.asimilarity_search
-'''
+# Models for the API
+class Documents(BaseModel):
+    texts: list[str]
 
-class VectorStoreManager:
-    def __init__(self, path: str, embeddings: Embeddings):
-        self.emb = embeddings
-        self.textSplitter = CharacterTextSplitter()
-        self.db = self.load_text(path)
-    
-    def load_text(self, path: str):
-        raw = TextLoader(path, encoding="utf-8").load()
-        split_docs = self.textSplitter.split_documents(raw)
-        db = Chroma.from_documents(documents=split_docs, embedding=self.emb)
-        return db
+class Query(BaseModel):
+    text: str
+    k: int = 4 
 
-    def add_documents(self, documents: list):
-        for document in documents:
-            self.db.aadd_texts(document)
-
-    def rag(self, query_text, k=5):
-        query_embedding = self.get_openai_embedding(query_text)
-        docs = self.db.similarity_search_by_vector(query_embedding, k=k) 
-        return docs
-
-    def get_openai_embedding(self, text: str):
-        url = "https://api.openai.com/v1/embeddings"
-        headers = {
-            "Authorization": f"Bearer {openai_api_key}",
-            "Content-Type": "application/json",
-        }
-        data = {
-            "input": text,
-            "model": "text-embedding-ada-002"
-        }
-        with httpx.Client() as client:
-            response = client.post(url, headers=headers, json=data)
-        if response.status_code != 200:
-            raise HTTPException(status_code=response.status_code, detail="Failed to get embeddings from OpenAI")
-        return response.json()["data"][0]["embedding"]
-
-@router.post("/add")
-async def add_to_store(data: list = Body(...)):
+@app.post("/add-documents/")
+async def add_documents(docs: Documents):
     try:
-        vector_store.add_documents(data)
-        return {"message": "Documents successfully added to vector store"}
+        for doc in docs.documents:
+            vectorstore.add_texts([doc.text])
+        return {"message": "Documents added successfully"}
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
 
-@router.get("/rag")
-def retrieve_documents(query: str, k: int = 5):
-    return vector_store.rag(query, k)
+@app.get("/retrieve-similar/")
+async def retrieve_similar(text: str, k: int = 4):
+    try:
+        results = vectorstore.similarity_search(text, k=k)
+        return results
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
 
-model_name = "text-embedding-ada-002"
-openai_embeddings = OpenAIEmbeddings(api_key=openai_api_key, model=model_name)
-vector_store = VectorStoreManager(path_to_text_file, embeddings=openai_embeddings)
+
+if __name__ == "__main__":
+    import uvicorn
+    uvicorn.run(app, host="0.0.0.0", port=8000)
