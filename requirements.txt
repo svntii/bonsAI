@@ -3,7 +3,7 @@ python-dotenv
 pyyaml
 langchain
 langchain-openai
-chromadb
+# chromadb
 
 fastapi
 uvicorn
