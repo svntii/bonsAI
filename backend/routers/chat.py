@@ -1,26 +1,33 @@
 from fastapi import APIRouter, Response, Body, status
 import jsonschema
+from uuid import uuid4
 from backend.schema import PROMPT_SCHEMA
 from backend.agent import chain
-from typing import List
-from pydantic import BaseModel
+from backend import conversation
 
 router = APIRouter(
     prefix="/chat"
 )
 
-class ChatResponse(BaseModel):
-    id: int
-    responseText: str
-    userResponseSuggestions: List[str]
+@router.post("")
+def new_conversation(response: Response):
+    conversation_id = str(uuid4())
+
+    conversation.history[conversation_id] = []
+
+    print(conversation.history)
+
+    return {
+        "id": conversation_id
+    }
 
 '''
 Input looks like:
 POST
 {"prompt": "<user input>"}
 '''
-@router.post("", response_model=ChatResponse)
-def invoke_agent(response: Response, body: dict = Body(...)):
+@router.post("/{conversation_id}")
+def invoke_agent(response: Response, conversation_id: str, body: dict = Body(...)):
     try:
         jsonschema.validate(body, PROMPT_SCHEMA)
     except jsonschema.ValidationError as error:
@@ -28,33 +35,30 @@ def invoke_agent(response: Response, body: dict = Body(...)):
         response.status_code = status.HTTP_400_BAD_REQUEST
         return {"message": error.message}
     
-    # response = chain.invoke({"input": body["prompt"]})
-
-    # print(response)
-
-    # return {
-    #     "completion": response.content
-    # }
-    response = {
-        'id' : 1,
-        'responseText' : "Successful response with id",
-        'userResponseSuggestions' : ["Suggestion 1", "Suggestion 2", "Suggestion 3"]
-    }
-    return ChatResponse(**response)
-
-@router.post("/{id}", response_model=ChatResponse)
-def invoke_agent_with_id(response: Response, id: int, body: dict = Body(...)):
-    try:
-        jsonschema.validate(body, PROMPT_SCHEMA)
-    except jsonschema.ValidationError as error:
-        print(error)
-        response.status_code = status.HTTP_400_BAD_REQUEST
-        return {"message": error.message}
+    print(conversation_id)
+    print(conversation.history)
     
-    # response = chain.invoke({"input": body["prompt"]})
-    response = {
-        'id' : id,
-        'responseText' : "Successful response with id",
-        'userResponseSuggestions' : ["Suggestion 1", "Suggestion 2", "Suggestion 3"]
+    history = conversation.history.get(conversation_id, None)
+
+    if history is None:
+        response.status_code = status.HTTP_404_NOT_FOUND
+        return {"message": "conversation id not found"}
+
+    user_prompt = body["prompt"]    
+    invocation = chain.invoke({"input": body["prompt"]})
+    bot_response = invocation["content"]
+
+    history.append({
+        "user": user_prompt,
+        "bot": bot_response
+    })
+
+    print(bot_response)
+
+
+    return {
+        "completion": bot_response
     }
-    return ChatResponse(**response)
+    
+
+
