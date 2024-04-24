@@ -21,7 +21,7 @@ def new_conversation(response: Response):
     return {
         "id": conversation_id,
         "response": response,
-        "suggested_responses": ""
+        "suggested_responses": [prompt_config.reject_qotd]
     }
 
 '''
@@ -51,10 +51,12 @@ def invoke_agent(response: Response, conversation_id: str, body: dict = Body(...
     ])
     history.database.save()
 
+    suggested_responses = agent.generated_suggested_responses(conversation_id)
+
     return {
         "response": bot_response,
         "sources": [],
-        "suggested_responses": []
+        "suggested_responses": suggested_responses
     }
     
 

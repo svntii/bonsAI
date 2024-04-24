@@ -1,7 +1,24 @@
 from openai import OpenAI
 from backend import history, prompt_config
+import json
 
 llm = OpenAI()
+
+def generated_suggested_responses(conversation_id):
+    prompt_stack = [
+        {"role": "system", "content": prompt_config.generate_suggestions_prompt},
+        *history.database[conversation_id]
+    ]
+
+    completion = llm.chat.completions.create(
+        model="gpt-3.5-turbo",
+        messages=prompt_stack
+    )
+
+    content = completion.choices[0].message.content
+    suggested_responses = json.loads(content)
+
+    return suggested_responses
 
 def invoke(user_input, conversation_id):
     prompt_stack = [
