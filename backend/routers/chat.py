@@ -2,7 +2,7 @@ from fastapi import APIRouter, Response, Body, status
 import jsonschema
 from uuid import uuid4
 from backend.schema import PROMPT_SCHEMA
-from backend import conversation, agent
+from backend import agent, history
 
 router = APIRouter(
     prefix="/chat"
@@ -12,12 +12,12 @@ router = APIRouter(
 def new_conversation(response: Response):
     conversation_id = str(uuid4())
 
-    conversation.history[conversation_id] = []
-
-    print(conversation.history)
+    history.database[conversation_id] = []
 
     return {
-        "id": conversation_id
+        "id": conversation_id,
+        "response": "",
+        "suggested_responses": ""
     }
 
 '''
@@ -34,28 +34,23 @@ def invoke_agent(response: Response, conversation_id: str, body: dict = Body(...
         response.status_code = status.HTTP_400_BAD_REQUEST
         return {"message": error.message}
     
-    print(conversation_id)
-    print(conversation.history)
-    
-    history = conversation.history.get(conversation_id, None)
-
-    if history is None:
+    if conversation_id not in history.database:
         response.status_code = status.HTTP_404_NOT_FOUND
         return {"message": "conversation id not found"}
 
     user_prompt = body["prompt"]    
-    bot_response = agent.invoke(body["prompt"])
+    bot_response = agent.invoke(user_prompt, conversation_id)
 
-    history.append({
-        "user": user_prompt,
-        "bot": bot_response
-    })
-
-    print(bot_response)
-
+    history.database[conversation_id].extend([
+        {"role": "user", "content": user_prompt},
+        {"role": "assistant", "content": bot_response}
+    ])
+    history.database.save()
 
     return {
-        "completion": bot_response
+        "response": bot_response,
+        "sources": [],
+        "suggested_responses": []
     }
     
 
