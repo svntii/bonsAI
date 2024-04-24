@@ -22,7 +22,9 @@ const chatApi = {
     try {
       const response = await axiosInstance.post(`/chat/${request.id}`, r);
       const chatResponse: ChatResponseDTO = {
-        completion: response.data.completion,
+        response: response.data.response,
+        sources: response.data.sources,
+        suggestedResponses: response.data.suggested_responses,
       };
 
       return chatResponse;
@@ -30,20 +32,20 @@ const chatApi = {
       throw error;
     }
   },
-  postVectorAdd: async (request: VectorAddRequestDTO): Promise<void> => {
-    try {
-      const response = await axiosInstance.post(
-        '/vectorstore/add',
-        request.vectors,
-      );
-      const vectorAddResponse: VectorAddResponseDTO = {
-        message: response.data.message,
-      };
-    } catch (error) {
-      throw error;
-    }
-    // verify that the request was successful
-  },
+  // postVectorAdd: async (request: VectorAddRequestDTO): Promise<void> => {
+  //   try {
+  //     const response = await axiosInstance.post(
+  //       '/vectorstore/add',
+  //       request.vectors,
+  //     );
+  //     const vectorAddResponse: VectorAddResponseDTO = {
+  //       message: response.data.message,
+  //     };
+  //   } catch (error) {
+  //     throw error;
+  //   }
+  //   // verify that the request was successful
+  // },
 };
 
 export default chatApi;

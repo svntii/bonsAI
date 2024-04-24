@@ -1,9 +1,14 @@
-export interface ChatResponseDTO {
-  id: number;
-  responseText: string;
-  userResponseSuggestions: string[];
+export interface initChatResponseDTO {
+  id: string;
+  response: string;
+  suggestedResponses: string[];
 }
 
+export interface ChatResponseDTO {
+  response: string;
+  sources: string[];
+  suggestedResponses: string[];
+}
 
 export interface ChatRequestDTO {
   id: string;
