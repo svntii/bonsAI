@@ -1,30 +1,29 @@
-// AppNavigator.tsx
-
-// AppNavigator.tsx
-
 import React from 'react';
-import {createDrawerNavigator} from '@react-navigation/drawer';
+import { createStackNavigator } from '@react-navigation/stack';
+import Home from '@screens/Home/Home';
 import Chat from '@screens/Home/Chat';
-import {useAppSelector} from '@providers/ChatStore';
+import { useAppSelector } from '@providers/ChatStore';
 
-const Drawer = createDrawerNavigator();
+const Stack = createStackNavigator();
 
 const AppNavigator = () => {
-  const conversations = useAppSelector(
-    state => state.conversation.conversations,
-  );
-
+  const conversations = useAppSelector(state => state.conversation.conversations);
   const chatIds = Object.keys(conversations);
 
   return (
-    <Drawer.Navigator initialRouteName="Home">
-      <Drawer.Screen
+    <Stack.Navigator initialRouteName="Home">
+      <Stack.Screen
+        name="Home"
+        component={Home}
+        options={{title: '', headerShown: false}}
+      />
+      <Stack.Screen
         name="Chat"
         component={Chat}
-        // initialParams={{chatId: chatIds[0] || null}}
-        options={{headerShown: true, drawerLabel: 'Chat', headerTitle: ''}}
+        options={{title: '', headerShown: false, headerLeft: null}}
+
       />
-    </Drawer.Navigator>
+    </Stack.Navigator>
   );
 };
 

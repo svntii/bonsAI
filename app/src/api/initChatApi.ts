@@ -2,9 +2,9 @@ import axiosInstance from '@utils/axiosInstance';
 import { initChatResponseDTO } from './dto/ChatDTO';
 
 const initChatApi = {
-  postChatMessage: async (message: string): Promise<any> => {
+  postChatMessage: async (): Promise<initChatResponseDTO> => {
     try {
-      const response = await axiosInstance.post('/chat', {prompt: message});
+      const response = await axiosInstance.post('/chat');
       const chatResponse : initChatResponseDTO = {
         id: response.data.id,
         response: response.data.response,

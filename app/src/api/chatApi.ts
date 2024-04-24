@@ -26,7 +26,6 @@ const chatApi = {
         sources: response.data.sources,
         suggestedResponses: response.data.suggested_responses,
       };
-
       return chatResponse;
     } catch (error) {
       throw error;
