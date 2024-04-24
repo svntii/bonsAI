@@ -6,24 +6,24 @@ interface ConversationState {
   conversations: Record<string, Conversation>;
   currentConversation: Conversation;
 }
-
+// id '0' is reserved for the bot
 const initialState: ConversationState = {
-  currentConversation: {id: '0', messages: []},
-  conversations: {current: {id: '0', messages: []}},
+  currentConversation: {internalId: '1', backendId: '', messages: []},
+  conversations: {current: {internalId: '1', backendId: '', messages: []}},
 };
 
 // Action Payloads
 interface AddConversationPayload {
-  id: string;
+  internalId: string;
   conversation: Conversation;
 }
 
 interface AddMessagePayload {
-  conversationId: string;
+  internalId: string;
   message: IMessage;
 }
 interface GetConversationPayload {
-  id: string;
+  internalId: string;
 }
 
 const ConversationSlice = createSlice({
@@ -35,18 +35,18 @@ const ConversationSlice = createSlice({
         ...state,
         conversations: {
           ...state.conversations,
-          [action.payload.id]: action.payload.conversation,
+          [action.payload.internalId]: action.payload.conversation,
         },
       };
     },
     addMessage: (state, action: PayloadAction<AddMessagePayload>) => {
-      const conversation = state.conversations[action.payload.conversationId];
+      const conversation = state.conversations[action.payload.internalId];
       if (conversation) {
         return {
           ...state,
           conversations: {
             ...state.conversations,
-            [action.payload.conversationId]: {
+            [action.payload.internalId]: {
               ...conversation,
               messages: [action.payload.message, ...conversation.messages],
             },
@@ -57,8 +57,8 @@ const ConversationSlice = createSlice({
           ...state,
           conversations: {
             ...state.conversations,
-            [action.payload.conversationId]: {
-              id: action.payload.conversationId,
+            [action.payload.internalId]: {
+              internalId: action.payload.internalId,
               messages: [action.payload.message],
             },
           },
@@ -66,13 +66,13 @@ const ConversationSlice = createSlice({
       }
     },
     getConversation: (state, action: PayloadAction<GetConversationPayload>) => {
-      if (!state.conversations[action.payload.id]) {
+      if (!state.conversations[action.payload.internalId]) {
         return {
           ...state,
           conversations: {
             ...state.conversations,
-            [action.payload.id]: {
-              id: action.payload.id,
+            [action.payload.internalId]: {
+              internalId: action.payload.internalId,
               messages: [],
             },
           },
@@ -80,7 +80,7 @@ const ConversationSlice = createSlice({
       } else {
         return {
           ...state,
-          currentConversation: state.conversations[action.payload.id],
+          currentConversation: state.conversations[action.payload.internalId],
         };
       }
     },
