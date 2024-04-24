@@ -24,8 +24,6 @@ def load_chunks(filename, source):
     text_splitter = CharacterTextSplitter(chunk_size=1000, chunk_overlap=100)
     chunks = text_splitter.split_documents(documents)
 
-    source = source.replace('.txt', '')
-
     for chunk in chunks:
         if chunk:
             content_with_source = f"Source: {source}\n{chunk.page_content}"
@@ -37,7 +35,7 @@ def add_documents(folder_path):
     for filename in os.listdir(folder_path):
         if filename.endswith(".txt"):  
             file_path = os.path.join(folder_path, filename)
-            source = filename  # Using filename as source metadata
+            source = filename.replace('.txt', '').replace('_', ' ')
             load_chunks(file_path, source)
 
 def rag(text, k=4):
@@ -62,10 +60,10 @@ def print_results(results):
 
 if __name__ == "__main__":
 
-    # doc_folder = "../data"
+    # doc_folder = "../data_2"
     # add_documents(doc_folder)
 
-    query_text = "what are the latest hall council updates?"
+    query_text = "fun fact from the red room podcast"
     k = 4
     results = rag(query_text, k)
     print_results(results)
