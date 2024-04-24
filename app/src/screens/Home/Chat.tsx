@@ -6,8 +6,6 @@ import { addMessage, getConversation } from '../../state/conversation/conversati
 import chatApi from '@api/chatApi';
 import initChatApi from '@api/initChatApi';
 import { ChatRequestDTO, ChatResponseDTO, initChatResponseDTO } from '@api/dto/ChatDTO';
-import { initialize } from 'parse';
-import { current } from '@reduxjs/toolkit';
 
 export default function Chat() {
   const currentConversation = useAppSelector(state => state.conversation.currentConversation);
@@ -45,8 +43,10 @@ export default function Chat() {
     try {
       const currentDate = new Date();
       const serializedDate = currentDate.toISOString();
+      const timestamp = Date.now();
+      const messageId = 'user' + internalId + '_' + timestamp;
       const message: IMessage = {
-        _id: currentConversation.messages.length, // Use a unique ID for the message
+        _id: messageId, // Use a unique ID for the message
         text: text,
         createdAt: serializedDate,
         user: { _id: userId }, // Set the user ID to represent the current user
@@ -129,6 +129,7 @@ export default function Chat() {
         onSend={onSend}
         user={{ _id: internalId }} // Set the user ID to represent the current user (e.g., ID 1)
         renderComposer={CustomComposer}
+        inverted={true} // Set the inverted prop to true to display the chat messages in reverse order
       />
     </View>
   );
