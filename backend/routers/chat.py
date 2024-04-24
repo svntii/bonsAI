@@ -2,7 +2,7 @@ from fastapi import APIRouter, Response, Body, status
 import jsonschema
 from uuid import uuid4
 from backend.schema import PROMPT_SCHEMA
-from backend import agent, history
+from backend import agent, history, qotd, prompt_config
 
 router = APIRouter(
     prefix="/chat"
@@ -12,11 +12,15 @@ router = APIRouter(
 def new_conversation(response: Response):
     conversation_id = str(uuid4())
 
-    history.database[conversation_id] = []
+    response = prompt_config.intro_message + "\n\n" + qotd.choose_one()
+
+    history.database[conversation_id] = [
+        {"role": "assistant", "content": response}
+    ]
 
     return {
         "id": conversation_id,
-        "response": "",
+        "response": response,
         "suggested_responses": ""
     }
 

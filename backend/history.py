@@ -30,6 +30,10 @@ class JSONDict:
         with open(self.json_file, 'w') as f:
             json.dump(self.data, f, indent=4)
 
+    def wipe(self):
+        self.data = {}
+        self.save()
+
     def __repr__(self):
         return repr(self.data)
 
