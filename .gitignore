@@ -6,3 +6,4 @@ app/__tests__
 app/Android/build/
 __pycache__
 venv
+.venv/

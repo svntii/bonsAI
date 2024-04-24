@@ -7,7 +7,8 @@ from backend import agent, history, qotd, prompt_config
 router = APIRouter(
     prefix="/chat"
 )
-@router.post("", response_model=initChatResponse)
+
+@router.post("")
 def new_conversation(response: Response):
     conversation_id = str(uuid4())
 
@@ -28,10 +29,8 @@ Input looks like:
 POST
 {"prompt": "<user input>"}
 '''
-
-@router.post("/{conversation_id}", response_model=chatResponse)
+@router.post("/{conversation_id}")
 def invoke_agent(response: Response, conversation_id: str, body: dict = Body(...)):
-    
     try:
         jsonschema.validate(body, PROMPT_SCHEMA)
     except jsonschema.ValidationError as error:
@@ -60,5 +59,4 @@ def invoke_agent(response: Response, conversation_id: str, body: dict = Body(...
         "suggested_responses": suggested_responses
     }
     
-
 
