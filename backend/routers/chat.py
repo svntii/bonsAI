@@ -2,8 +2,7 @@ from fastapi import APIRouter, Response, Body, status
 import jsonschema
 from uuid import uuid4
 from backend.schema import PROMPT_SCHEMA
-from backend.agent import chain
-from backend import conversation
+from backend import conversation, agent
 
 router = APIRouter(
     prefix="/chat"
@@ -45,8 +44,7 @@ def invoke_agent(response: Response, conversation_id: str, body: dict = Body(...
         return {"message": "conversation id not found"}
 
     user_prompt = body["prompt"]    
-    invocation = chain.invoke({"input": body["prompt"]})
-    bot_response = invocation["content"]
+    bot_response = agent.invoke(body["prompt"])
 
     history.append({
         "user": user_prompt,
