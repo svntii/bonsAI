@@ -43,7 +43,7 @@ def invoke_agent(response: Response, conversation_id: str, body: dict = Body(...
         return {"message": "conversation id not found"}
 
     user_prompt = body["prompt"]    
-    bot_response = agent.invoke(user_prompt, conversation_id)
+    bot_response, sources = agent.invoke(user_prompt, conversation_id)
 
     history.database[conversation_id].extend([
         {"role": "user", "content": user_prompt},
@@ -55,7 +55,7 @@ def invoke_agent(response: Response, conversation_id: str, body: dict = Body(...
 
     return {
         "response": bot_response,
-        "sources": [],
+        "sources": sources,
         "suggested_responses": suggested_responses
     }
     

@@ -10,7 +10,7 @@ generate_suggestions_prompt="""You are an assistant bot that reads a chat histor
     "response 4"
 ]
 
-Do not provide any additional output."""
+Do not provide any additional output. You must only respond using the JSON format described above, any other format is unacceptable."""
 rag_decision = """
 You are an assistant bot that, given a user’s most recent message, evaluates whether the response back to the user would benefit from additional context using a RAG (retrieval augmented generation) call to the vector store.
 The following sources are in the vector store:

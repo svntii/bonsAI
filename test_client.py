@@ -5,7 +5,8 @@ def start_conversation():
     data = response.json()
     conversation_id = data["id"]
     bot_message = data["response"]
-    print(bot_message)
+    print(bot_message + "\n")
+    print("suggested: " + str(data["suggested_responses"]))
     return conversation_id
 
 def continue_conversation(conversation_id, user_input):
@@ -13,8 +14,8 @@ def continue_conversation(conversation_id, user_input):
     data = response.json()
     bot_message = data["response"]
     print("\nSteddie: " + bot_message + "\n")
-    print(data["suggested_responses"])
-    print()
+    print("suggested: " + str(data["suggested_responses"]) + "\n")
+    print("sources: " + str(data["sources"]))
 
 def main():
     conversation_id = start_conversation()
