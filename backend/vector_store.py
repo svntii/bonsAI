@@ -38,32 +38,6 @@ def add_documents(folder_path):
             source = filename.replace('.txt', '').replace('_', ' ')
             load_chunks(file_path, source)
 
-def rag(text, k=4):
-    results = vectorstore.similarity_search(text, k=k)
-    return results
-
-def print_results(results):
-    for i, document in enumerate(results):
-        lines = document.page_content.split('\n', 1)
-        if len(lines) > 1:
-            metadata_line, page_content = lines
-            source = metadata_line.replace('Source: ', '') 
-            metadata = {"source": source}
-        else:
-            page_content = lines[0] if lines else 'No content available'
-            metadata = {"source": "No source specified"}
-
-        print(f"Document {i + 1}:")
-        print(f"\n{page_content}")
-        print(f"Metadata: {metadata}")
-        print("\n")  
-
 if __name__ == "__main__":
-
     # doc_folder = "../data_2"
     # add_documents(doc_folder)
-
-    query_text = "fun fact from the red room podcast"
-    k = 4
-    results = rag(query_text, k)
-    print_results(results)

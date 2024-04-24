@@ -1,5 +1,6 @@
 from openai import OpenAI
 from backend import history, prompt_config
+from backend.rag import rag_results
 import json
 
 llm = OpenAI()
@@ -21,8 +22,10 @@ def generated_suggested_responses(conversation_id):
     return suggested_responses
 
 def invoke(user_input, conversation_id):
+    docs, sources = rag_results(user_input, conversation_id)
     prompt_stack = [
         {"role": "system", "content": prompt_config.system_prompt},
+        {"role": "system", "content": docs},
         *history.database[conversation_id],
         {"role": "user", "content": user_input}
     ]
