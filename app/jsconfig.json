@@ -1,0 +1,15 @@
+{
+    "compilerOptions": {
+      "baseUrl": ".",
+      "paths": {
+        "src/*": ["./src/*"],
+        "api/*": ["./src/api/*"],
+        "navigation/*": ["./src/navigation/*"],
+        "features/*": ["./src/features/*"],
+        "providers/*": ["./src/providers/*"],
+        "screens/*": ["./src/screens/*"],
+        "theme/*": ["./src/theme/*"],
+        "utils/*": ["./src/utils/*"]
+      }
+    }
+  }

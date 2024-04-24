@@ -1,3 +1,8 @@
 .env
+
+app/__tests__
+
+# Android
+app/Android/build/
 __pycache__
 venv
