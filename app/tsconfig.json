@@ -4,11 +4,13 @@
     "baseUrl": "./",
     "paths": {
       "@api/*": ["./src/api/*"],
-      "@assets/*": ["./src/assets/*"],
       "@features/*": ["./src/features/*"],
+      "@navigation/*": ["./src/navigation/*"],
       "@providers/*": ["./src/providers/*"],
       "@screens/*": ["./src/screens/*"],
+      "@S/*": ["./src/state/*"],
       "@theme/*": ["./src/theme/*"],
+      "@T/*": ["./src/types/*"],
       "@utils/*": ["./src/utils/*"],
     }
   },

@@ -18,7 +18,7 @@ Parse.setAsyncStorage(AsyncStorage);
 import {ThemeProvider} from '@providers/ThemeContext';
 import {Provider} from 'react-redux';
 import {ChatStore} from '@providers/ChatStore';
-import MainNavigation from 'src/navigation/navigation';
+import MainNavigation from '@navigation/navigation';
 
 function App(): React.JSX.Element {
   const isDarkMode = useColorScheme() === 'dark';

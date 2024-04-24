@@ -1,14 +1,17 @@
-// Home.tsx
-
 import React from 'react';
-import {View, Text} from 'react-native';
+import { View, Text, Button } from 'react-native';
 
-const Home = ({navigation}: any) => {
+const LandingPage = ({ navigation }: { navigation: any }) => {
+  const handleChatButtonPress = () => {
+    navigation.navigate('Chat', { screen: 'Chat' });
+  };
+
   return (
-    <View>
-      <Text>You Are Home !</Text>
+    <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
+      <Text>Welcome to our app!</Text>
+      <Button title="Start Chatting" onPress={handleChatButtonPress} />
     </View>
   );
 };
 
-export default Home;
+export default LandingPage;
