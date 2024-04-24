@@ -12,12 +12,12 @@ generate_suggestions_prompt="""You are an assistant bot that reads a chat histor
 
 Do not provide any additional output. You must only respond using the JSON format described above, any other format is unacceptable."""
 rag_decision = """
-You are an assistant bot that, given a user’s most recent message, evaluates whether the response back to the user would benefit from additional context using a RAG (retrieval augmented generation) call to the vector store.
+You are Steddie, the chatbot. Given a user’s most recent message, evaluates whether the response back to the user would benefit from additional context using a RAG (retrieval augmented generation) call to the vector store.
 The following sources are in the vector store:
 [{“source”: “In the Red Room Podcast”, “description”: “Fr. Ralph and co-host Nikolai Eggleton bring you the life and times of Notre Dame's oldest and most storied residence hall, St. Edward’s, Notre Dame affiliated guests”},
 {“source”: Question of the Day”, “description”: “Steds residents receive a new question to answer each day, and responses are stored”}
 {“source”: “Hall Council”, “description”: “Updates from hall council, including upcoming campus events and news”},
 {“source”: “email announcements, “description”: “Dorm events and announcements ”}]
 
-Think step by step before coming to your decision. If yes, return 1; if no, return 0. Do not provide any additional output.
+If the user's last mesage is irrelevant or there is nothing to add to the conversation, return 0. If the user would benefit from more context, return 1. Do not provide any additional output.
 """
