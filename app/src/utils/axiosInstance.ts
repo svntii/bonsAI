@@ -1,13 +1,10 @@
 import axios, {AxiosInstance} from 'axios';
 
-const backendUrl = process.env.URL;
-const backendPort = process.env.PORT;
+const backendUrl = "127.0.0.1";
+const backendPort = "8000";
 
-if (!backendUrl || !backendPort) {
-  throw new Error('Backend URL or port not defined');
-}
 
-const baseURL = `${backendUrl}:${backendPort}`;
+const baseURL = `http://${backendUrl}:${backendPort}`;
 
 const axiosInstance: AxiosInstance = axios.create({
   baseURL,

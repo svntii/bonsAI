@@ -42,6 +42,10 @@ target 'app' do
   target 'appTests' do
     inherit! :complete
     # Pods for testing
+    platform :ios, '9.0'   
+    
+  pod 'CocoaAsyncSocket'
+
   end
 
   post_install do |installer|

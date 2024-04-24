@@ -16,7 +16,8 @@ export interface ChatState {
 }
 
 export interface Conversation {
-  id: string;
+  internalId: string;
+  backendId: string;
   messages: IMessage[];
 }
 
