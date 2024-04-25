@@ -16,6 +16,7 @@ import {
   InputToolbar,
   Send,
   Bubble,
+  BubbleProps,
 } from 'react-native-gifted-chat';
 import {useAppDispatch, useAppSelector} from '@providers/ChatStore';
 import {
@@ -74,7 +75,6 @@ export default function Chat() {
       };
       const response: ChatResponseDTO = await chatApi.postChatMessage(request);
       handleSendResponse(response.response, 0); // Send the bot's response to the chat
-      console.log('response:', response);
       updateState(response.suggestedResponses, response.sources);
     } catch (error) {
       console.error('Error requesting chat response:', error);
@@ -177,7 +177,7 @@ export default function Chat() {
               style={styles.responseButton}
               onPress={() => {
                 handleSendResponse(suggestion, internalId);
-                setSuggestions([]);
+                updateState([], []);
               }}>
               <Text style={styles.responseButtonText}>{suggestion}</Text>
             </TouchableOpacity>
@@ -200,15 +200,19 @@ export default function Chat() {
     return <View style={{height: 80}} />;
   };
 
-  const renderBubble = props => {
+  const renderBubble = (props: BubbleProps<IMessage>) => {
+    console.log('props_user:', props.user?._id);
+    console.log('message', props.currentMessage?.user?._id);
+    console.log('sources:', sources);
     return (
       <View style={{flex: 1, flexDirection: 'row'}}>
         <Bubble
           {...props}
+          position="left"
           textStyle={styles.bubbleTextStyle}
           wrapperStyle={styles.bubbleWrapperStyle}
         />
-        {sources.length > 0 && (
+        {sources.length > 0 && props.user?._id === 0 && (
           <Image
             style={styles.infoImage}
             source={require('../../assets/infoIcon.png')}
@@ -295,8 +299,8 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   infoImage: {
-    width: 30,
-    height: 30,
+    width: 15,
+    height: 15,
     marginTop: 'auto',
     bottom: 0,
   },
