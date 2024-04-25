@@ -6,9 +6,10 @@ import {
   TouchableOpacity,
   Image,
   ScrollView,
-  Button,
   Dimensions,
+  FlatList,
 } from 'react-native';
+import {Overlay} from 'react-native-elements';
 import {
   GiftedChat,
   IMessage,
@@ -31,6 +32,7 @@ import {
   ChatResponseDTO,
   initChatResponseDTO,
 } from '@api/dto/ChatDTO';
+import {BlurView} from '@react-native-community/blur';
 
 export default function Chat() {
   const currentConversation = useAppSelector(
@@ -41,6 +43,7 @@ export default function Chat() {
   const [suggestions, setSuggestions] = React.useState<string[]>([]);
   const [sources, setSources] = React.useState<string[]>([]);
   const SPACING_FOR_CARD_INSET = Dimensions.get('window').width * 0.1 - 10;
+  const [isOverlayVisible, setIsOverlayVisible] = React.useState(false);
 
   useEffect(() => {
     async function initializeChat() {
@@ -75,7 +78,6 @@ export default function Chat() {
       };
       const response: ChatResponseDTO = await chatApi.postChatMessage(request);
       handleSendResponse(response.response, 0); // Send the bot's response to the chat
-      console.log('response:', response);
       updateState(response.suggestedResponses, response.sources);
     } catch (error) {
       console.error('Error requesting chat response:', error);
@@ -177,6 +179,7 @@ export default function Chat() {
               key={index}
               style={styles.responseButton}
               onPress={() => {
+                console.log('the internal id is', internalId);
                 handleSendResponse(suggestion, internalId);
                 updateState([], []);
               }}>
@@ -209,11 +212,15 @@ export default function Chat() {
           textStyle={styles.bubbleTextStyle}
           wrapperStyle={styles.bubbleWrapperStyle}
         />
-        {sources.length > 0 && props.user?._id === 0 && (
-          <Image
-            style={styles.infoImage}
-            source={require('../../assets/infoIcon.png')}
-          />
+        {sources.length > 0 && props.currentMessage?.user._id === 0 && (
+          <TouchableOpacity
+            onLongPress={() => setIsOverlayVisible(true)}
+            onPressOut={() => setIsOverlayVisible(false)}>
+            <Image
+              style={styles.infoImage}
+              source={require('../../assets/infoIcon.png')}
+            />
+          </TouchableOpacity>
         )}
       </View>
     );
@@ -234,6 +241,36 @@ export default function Chat() {
         renderAvatar={null}
         renderAvatarOnTop={true}
       />
+      <Overlay
+        isVisible={isOverlayVisible}
+        onBackdropPress={() => setIsOverlayVisible(false)}
+        backdropStyle={{backgroundColor: 'rgba(0, 0, 0, 0.8)'}} // More opaque
+        overlayStyle={{
+          backgroundColor: 'gray',
+          borderRadius: 10,
+          padding: 20,
+          width: '80%',
+          maxHeight: '50%',
+        }}>
+        <Text>
+          This message used RAG, here are the sources for this message:
+        </Text>
+        <FlatList
+          data={sources}
+          renderItem={({item}) => (
+            <View
+              style={{
+                flexDirection: 'row',
+                alignItems: 'flex-start',
+                marginBottom: 5,
+              }}>
+              <Text style={{marginRight: 10, color: white}}>•</Text>
+              <Text style={{color: white}}>{item}</Text>
+            </View>
+          )}
+          keyExtractor={(item, index) => index.toString()}
+        />
+      </Overlay>
     </View>
   );
 }
@@ -296,8 +333,8 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   infoImage: {
-    width: 15,
-    height: 15,
+    width: 25,
+    height: 25,
     marginTop: 'auto',
     bottom: 0,
   },
