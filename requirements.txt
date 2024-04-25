@@ -3,7 +3,6 @@ python-dotenv
 pyyaml
 langchain
 langchain-openai
-langchain-pinecone
 # chromadb
 
 fastapi
