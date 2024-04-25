@@ -256,9 +256,7 @@ export default function Chat() {
           width: '80%',
           maxHeight: '50%',
         }}>
-        <Text>
-          This message used RAG, here are the sources for this message:
-        </Text>
+        <Text>Here are the sources for this message:</Text>
         <FlatList
           data={sources}
           renderItem={({item}) => (

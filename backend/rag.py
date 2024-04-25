@@ -7,6 +7,7 @@ import json
 
 llm = OpenAI()
 index_name = "rag2"
+MODEL = "gpt-4-turbo"
 embeddings = OpenAIEmbeddings(api_key=os.getenv('OPENAI_API_KEY'))
 vectorstore = PineconeVectorStore(index_name=index_name, embedding=embeddings)
 
@@ -17,7 +18,7 @@ def rag_decision(conversation_id):
     ]
 
     completion = llm.chat.completions.create(
-        model="gpt-3.5-turbo",
+        model=MODEL,
         messages=prompt_stack
     )
 

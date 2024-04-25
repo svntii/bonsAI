@@ -7,7 +7,7 @@ const baseURL = `http://${backendUrl}:${backendPort}`;
 
 const axiosInstance: AxiosInstance = axios.create({
   baseURL,
-  timeout: 10000, // 10 seconds
+  timeout: 20000, // 10 seconds
   headers: {
     'Content-Type': 'application/json',
   },

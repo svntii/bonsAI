@@ -5,14 +5,16 @@ import json, datetime
 
 llm = OpenAI()
 
+MODEL = "gpt-3.5-turbo"
+
 def generated_suggested_responses(conversation_id):
     prompt_stack = [
         {"role": "system", "content": prompt_config.generate_suggestions_prompt},
-        *history.database[conversation_id]
+        *history.pull_most_recent(conversation_id)
     ]
 
     completion = llm.chat.completions.create(
-        model="gpt-3.5-turbo",
+        model=MODEL,
         messages=prompt_stack
     )
 
@@ -37,7 +39,7 @@ def invoke(user_input, conversation_id):
         {"role": "system", "content": prompt_config.system_prompt},
         {"role": "system", "content": get_context()},
         {"role": "system", "content": docs},
-        *history.database[conversation_id],
+        *history.pull_most_recent(conversation_id),
         {"role": "user", "content": user_input}
     ]
 
@@ -46,7 +48,7 @@ def invoke(user_input, conversation_id):
     print(docs)
     print()
     print("HISTORY:")
-    for message in history.database[conversation_id]:
+    for message in history.pull_most_recent(conversation_id):
         print(message["role"] + ": " + message["content"])
     print()
     print("USER INPUT:")
@@ -55,7 +57,7 @@ def invoke(user_input, conversation_id):
     print()
 
     completion = llm.chat.completions.create(
-        model="gpt-3.5-turbo",
+        model=MODEL,
         messages=prompt_stack
     )
 

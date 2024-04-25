@@ -37,5 +37,7 @@ class JSONDict:
     def __repr__(self):
         return repr(self.data)
 
-
 database = JSONDict('history.json')
+
+def pull_most_recent(conversation_id, count=5):
+    return database[conversation_id][-count:]
