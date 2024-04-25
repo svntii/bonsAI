@@ -51,7 +51,13 @@ export default function Chat() {
         const response: initChatResponseDTO =
           await initChatApi.postChatMessage();
         handleSendResponse(response.response, 0); // Send the initial response to the chat (from the bot)
-        currentConversation.backendId = response.id;
+        updateState(response.suggestedResponses, []);
+        dispatch(
+          updateConversation({
+            internalId: internalId,
+            newBackendId: response.id,
+          }),
+        );
       } catch (error) {
         console.error('Error initializing chat API:', error);
       }
@@ -67,10 +73,15 @@ export default function Chat() {
       };
       const response: ChatResponseDTO = await chatApi.postChatMessage(request);
       handleSendResponse(response.response, 0); // Send the bot's response to the chat
+      updateState(response.suggestedResponses, response.sources);
     } catch (error) {
       console.error('Error requesting chat response:', error);
     }
   }
+  const updateState = (suggestions: string[], sources: string[]) => {
+    setSuggestions(suggestions);
+    setSources(sources);
+  };
 
   const handleSendResponse = async (text: string, userId: number) => {
     try {
@@ -84,7 +95,6 @@ export default function Chat() {
         createdAt: serializedDate,
         user: {_id: userId}, // Set the user ID to represent the current user
       };
-
       if (userId !== 0) {
         await onSend([message]);
       } else {
@@ -94,7 +104,6 @@ export default function Chat() {
       console.error('Error handling send response:', error);
     }
   };
-
   const displayMessages = async (messages: IMessage[] = []) => {
     try {
       const promises = messages.map(async message => {
@@ -167,7 +176,6 @@ export default function Chat() {
             key={index}
             style={styles.responseButton}
             onPress={() => {
-              console.log('the internal id is', internalId);
               handleSendResponse(suggestion, internalId);
               updateState([], []);
             }}>
