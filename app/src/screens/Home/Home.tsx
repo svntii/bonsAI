@@ -1,5 +1,5 @@
 import React from 'react';
-import { View, Text, Button, StyleSheet } from 'react-native';
+import { View, Text, Button, StyleSheet, Image } from 'react-native';
 import { TouchableOpacity } from 'react-native-gesture-handler';
 
 const LandingPage = ({ navigation }: { navigation: any }) => {
@@ -36,6 +36,7 @@ const LandingPage = ({ navigation }: { navigation: any }) => {
     <View style={styles.container}>
       {renderTitle()}
       {renderSubtitle()}
+      <Image source={require('../../assets/landingPageIcon.png')} style={styles.image}/>
       {renderButton()}
     </View>
   );
@@ -54,6 +55,7 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
     padding: 20,
+    backgroundColor: white
   },
   titleContainer: {
     alignItems: 'center',
@@ -69,7 +71,7 @@ const styles = StyleSheet.create({
     color: '#888',
   },
   subtitleContainer: {
-    marginBottom: 20,
+    marginBottom: 10,
   },
   subtitle: {
     fontFamily: 'Roboto',
@@ -90,6 +92,10 @@ const styles = StyleSheet.create({
     fontSize: 18,
     color: 'white', // Button text color set to white
     textAlign: 'center',
+  },
+  image: {
+    width: 300, 
+    height: 300,
   },
 });
 
