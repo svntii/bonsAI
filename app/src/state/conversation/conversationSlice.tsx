@@ -9,7 +9,7 @@ interface ConversationState {
 // id '0' is reserved for the bot
 const initialState: ConversationState = {
   currentConversation: {internalId: '1', backendId: '', messages: []},
-  conversations: {'1': {internalId: '1', backendId: '', messages: []}},
+  conversations: {1: {internalId: '1', backendId: '', messages: []}},
 };
 
 // Action Payloads

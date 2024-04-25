@@ -75,6 +75,7 @@ export default function Chat() {
       };
       const response: ChatResponseDTO = await chatApi.postChatMessage(request);
       handleSendResponse(response.response, 0); // Send the bot's response to the chat
+      console.log('response:', response);
       updateState(response.suggestedResponses, response.sources);
     } catch (error) {
       console.error('Error requesting chat response:', error);
@@ -201,14 +202,10 @@ export default function Chat() {
   };
 
   const renderBubble = (props: BubbleProps<IMessage>) => {
-    console.log('props_user:', props.user?._id);
-    console.log('message', props.currentMessage?.user?._id);
-    console.log('sources:', sources);
     return (
       <View style={{flex: 1, flexDirection: 'row'}}>
         <Bubble
           {...props}
-          position="left"
           textStyle={styles.bubbleTextStyle}
           wrapperStyle={styles.bubbleWrapperStyle}
         />
