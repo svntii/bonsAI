@@ -21,11 +21,6 @@ export interface Conversation {
   messages: IMessage[];
 }
 
-export interface BonsaAIChat {
-  messages: IMessage[];
-  sources: string[];
-}
-
 export interface ChatWindowProps {
   chatId: string;
 }
