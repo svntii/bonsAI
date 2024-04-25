@@ -162,6 +162,12 @@ export default function Chat() {
   );
   }
 
+  const renderAvatar = (props) => {
+    return (
+      <Image source={require('../../assets/stewieAvatar.png')} style={styles.avatarImage}/>
+    )
+  }
+
 
   return (
     <View style={styles.container}>
@@ -175,7 +181,7 @@ export default function Chat() {
         renderBubble={renderBubble}
         alwaysShowSend={true}
         renderChatFooter={renderChatFooter}
-        renderAvatar={null}
+        renderAvatar={renderAvatar}
         renderAvatarOnTop={true}
         />
     </View>
@@ -238,6 +244,11 @@ const styles = StyleSheet.create({
     },
   composerStyle: {
     flex: 1,
-    
-  }
+  },
+  avatarImage: {
+    width: 30, 
+    height: 30,
+    borderRadius: 15,
+  },
+  
 });
