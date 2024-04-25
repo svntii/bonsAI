@@ -88,12 +88,19 @@ export default function Chat() {
   };
   
   const renderInputToolbar = (props) => {
-    return <InputToolbar {...props} containerStyle={styles.inputToolbar} />
+    return (
+
+      <View style={{flex:1}}>
+        <InputToolbar {...props} containerStyle={styles.inputToolbar}>
+        </InputToolbar>
+      </View>
+    );
   }
+
   const renderSend = (props) => {
     return (
       <TouchableOpacity>
-      <Send {...props} containerStyle={styles.renderSend}>
+      <Send {...props} >
         <Image source={require('../../assets/send.png')} style={styles.sendImage} />
       </Send>
       </TouchableOpacity>
@@ -101,31 +108,37 @@ export default function Chat() {
     );
   }
 
+  const renderSuggestions = (props) => {
+    return (
+      <View style={{ flexDirection: 'row', justifyContent: 'space-around', padding: 5 }}>
+      {/* Touchable components */}
+      <TouchableOpacity
+        style={styles.responseButton}
+        onPress={() => handleSendResponse('Yes', internalId)}
+      >
+        <Text style={styles.responseButtonText}>Yes</Text>
+      </TouchableOpacity>
+      <TouchableOpacity
+        style={styles.responseButton}
+        onPress={() => handleSendResponse('No', internalId)}
+      >
+        <Text style={styles.responseButtonText}>No</Text>
+      </TouchableOpacity>
+      <TouchableOpacity
+        style={styles.responseButton}
+        onPress={() => handleSendResponse('Maybe', internalId)}
+      >
+        <Text style={styles.responseButtonText}>Maybe</Text>
+      </TouchableOpacity>
+    </View>
+    );
+  }
+  
   const renderComposer = (props) => {
     return (
+      
     <View style={{ flex: 1 }}>
-
-      <View style={{ flexDirection: 'row', justifyContent: 'space-around', padding: 5 }}>
-        {/* Touchable components */}
-        <TouchableOpacity
-          style={styles.responseButton}
-          onPress={() => handleSendResponse('Yes', internalId)}
-        >
-          <Text style={styles.responseButtonText}>Yes</Text>
-        </TouchableOpacity>
-        <TouchableOpacity
-          style={styles.responseButton}
-          onPress={() => handleSendResponse('No', internalId)}
-        >
-          <Text style={styles.responseButtonText}>No</Text>
-        </TouchableOpacity>
-        <TouchableOpacity
-          style={styles.responseButton}
-          onPress={() => handleSendResponse('Maybe', internalId)}
-        >
-          <Text style={styles.responseButtonText}>Maybe</Text>
-        </TouchableOpacity>
-      </View>
+      {renderSuggestions(props)}
       <Composer
         {...props}
       />
@@ -148,7 +161,8 @@ export default function Chat() {
       />
   );
   }
-  
+
+
   return (
     <View style={styles.container}>
       <GiftedChat
@@ -161,6 +175,8 @@ export default function Chat() {
         renderBubble={renderBubble}
         alwaysShowSend={true}
         renderChatFooter={renderChatFooter}
+        renderAvatar={null}
+        renderAvatarOnTop={true}
         />
     </View>
   );
@@ -181,17 +197,19 @@ const styles = StyleSheet.create({
   },
   responseButton: {
     backgroundColor: primaryColor,
-    padding: 10,
-    borderRadius: 10,
+    padding: 15,
+    borderRadius: 20,
     margin: 5,
   },
+
   inputToolbar: {
-    marginLeft: 15,
-    marginRight: 15,
-    marginBottom: 10,
-    marginTop: 30,
+    marginLeft: 5,
+    marginRight: 5,
+    marginBottom: 5,
+    marginTop: 5,
     borderWidth: 0,
-    borderRadius: 25
+    borderRadius: 20,
+    backgroundColor: white,
   },
   sendImage: {
     width: 30,
@@ -217,5 +235,9 @@ const styles = StyleSheet.create({
       backgroundColor: primaryColor,
       color: white
     }
-    }
+    },
+  composerStyle: {
+    flex: 1,
+    
+  }
 });
