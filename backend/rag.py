@@ -6,7 +6,7 @@ import os
 import json
 
 llm = OpenAI()
-index_name = "rag"
+index_name = "rag2"
 embeddings = OpenAIEmbeddings(api_key=os.getenv('OPENAI_API_KEY'))
 vectorstore = PineconeVectorStore(index_name=index_name, embedding=embeddings)
 
@@ -23,7 +23,7 @@ def rag_decision(conversation_id):
 
     content = completion.choices[0].message.content
     decision = json.loads(content)
-
+    print(decision)
     return decision
 
 def rag(text, k=4):
@@ -53,9 +53,12 @@ def compile_sources(results):
 def rag_results(user_input, conversation_id):
     decision = rag_decision(conversation_id)
 
-    if decision: 
+    if decision==1: 
         documents = rag(user_input, k=4)
         concat_docs = compile_documents(documents)
         sources = compile_sources(documents)
+    else: 
+        concat_docs = ""
+        sources = []
 
     return concat_docs, sources

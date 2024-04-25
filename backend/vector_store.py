@@ -10,7 +10,7 @@ More info: https://docs.pinecone.io/integrations/langchain
 https://api.python.langchain.com/en/latest/vectorstores/langchain_pinecone.vectorstores.PineconeVectorStore.html
 '''
 
-index_name = "rag"
+index_name = "rag2"
 embeddings = OpenAIEmbeddings(api_key=os.getenv('OPENAI_API_KEY'))
 vectorstore = PineconeVectorStore(index_name=index_name, embedding=embeddings)
 
@@ -39,5 +39,5 @@ def add_documents(folder_path):
             load_chunks(file_path, source)
 
 if __name__ == "__main__":
-    # doc_folder = "../data_2"
-    # add_documents(doc_folder)
+    doc_folder = "../data_2"
+    add_documents(doc_folder)
