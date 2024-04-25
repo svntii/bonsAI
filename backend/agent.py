@@ -5,6 +5,8 @@ import json, datetime
 
 llm = OpenAI()
 
+MODEL = "gpt-4-turbo"
+
 def generated_suggested_responses(conversation_id):
     prompt_stack = [
         {"role": "system", "content": prompt_config.generate_suggestions_prompt},
@@ -12,7 +14,7 @@ def generated_suggested_responses(conversation_id):
     ]
 
     completion = llm.chat.completions.create(
-        model="gpt-3.5-turbo",
+        model=MODEL,
         messages=prompt_stack
     )
 
@@ -55,7 +57,7 @@ def invoke(user_input, conversation_id):
     print()
 
     completion = llm.chat.completions.create(
-        model="gpt-3.5-turbo",
+        model=MODEL,
         messages=prompt_stack
     )
 
