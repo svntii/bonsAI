@@ -1,16 +1,46 @@
-import React, { useEffect } from 'react';
-import { View, StyleSheet, Button, TextInput, Text, TouchableOpacity, Image } from 'react-native';
-import { GiftedChat, IMessage, Composer, InputToolbar, Send, Bubble } from 'react-native-gifted-chat';
-import { useAppDispatch, useAppSelector } from '@providers/ChatStore';
-import { addMessage, getConversation } from '../../state/conversation/conversationSlice';
+import React, {useEffect} from 'react';
+import {
+  View,
+  StyleSheet,
+  Text,
+  TouchableOpacity,
+  Image,
+  ScrollView,
+  Dimensions,
+  FlatList,
+} from 'react-native';
+import {Overlay} from 'react-native-elements';
+import {
+  GiftedChat,
+  IMessage,
+  Composer,
+  InputToolbar,
+  Send,
+  Bubble,
+  BubbleProps,
+} from 'react-native-gifted-chat';
+import {useAppDispatch, useAppSelector} from '@providers/ChatStore';
+import {
+  addMessage,
+  getConversation,
+  updateConversation,
+} from '../../state/conversation/conversationSlice';
 import chatApi from '@api/chatApi';
 import initChatApi from '@api/initChatApi';
-import { ChatRequestDTO, ChatResponseDTO, initChatResponseDTO } from '@api/dto/ChatDTO';
-
+import {
+  ChatRequestDTO,
+  ChatResponseDTO,
+  initChatResponseDTO,
+} from '@api/dto/ChatDTO';
+import {BlurView} from '@react-native-community/blur'
 export default function Chat() {
   const currentConversation = useAppSelector(state => state.conversation.currentConversation);
   const internalId = currentConversation.internalId;
   const dispatch = useAppDispatch();
+  const [suggestions, setSuggestions] = React.useState<string[]>([]);
+  const [sources, setSources] = React.useState<string[]>([]);
+  const SPACING_FOR_CARD_INSET = Dimensions.get('window').width * 0.1 - 10;
+  const [isOverlayVisible, setIsOverlayVisible] = React.useState(false);
 
   useEffect(() => {
     async function initializeChat() {
@@ -110,6 +140,38 @@ export default function Chat() {
 
   const renderSuggestions = (props) => {
     return (
+      <>
+        <ScrollView
+          pagingEnabled
+          horizontal
+          showsHorizontalScrollIndicator={false}
+          contentContainerStyle={{
+            flexGrow: 1,
+            position: 'relative',
+          }}
+          contentInset={{
+            // iOS ONLY
+            top: 0,
+            left: SPACING_FOR_CARD_INSET, // Left spacing for the very first card
+            bottom: 0,
+            right: SPACING_FOR_CARD_INSET, // Right spacing for the very last card
+          }}
+          decelerationRate={0} // Disable deceleration
+          snapToAlignment={'center'}>
+          {suggestions.slice(0, 3).map((suggestion, index) => (
+            <TouchableOpacity
+              key={index}
+              style={styles.responseButton}
+              onPress={() => {
+                console.log('the internal id is', internalId);
+                handleSendResponse(suggestion, internalId);
+                updateState([], []);
+              }}>
+              <Text style={styles.responseButtonText}>{suggestion}</Text>
+            </TouchableOpacity>
+          ))}
+        </ScrollView>
+      </>
       <View style={{ flexDirection: 'row', justifyContent: 'space-around', padding: 5 }}>
       {/* Touchable components */}
       <TouchableOpacity
@@ -130,8 +192,7 @@ export default function Chat() {
       >
         <Text style={styles.responseButtonText}>Maybe</Text>
       </TouchableOpacity>
-    </View>
-    );
+    </View>    );
   }
   
   const renderComposer = (props) => {
@@ -153,14 +214,27 @@ export default function Chat() {
     )
   }
 
-  const renderBubble = (props) => {
+  const renderBubble = (props: BubbleProps<IMessage>) => {
     return (
-      <Bubble {...props}
-      textStyle={ styles.bubbleTextStyle }
-      wrapperStyle={ styles.bubbleWrapperStyle }
-      />
-  );
-  }
+      <View style={{flex: 1, flexDirection: 'row'}}>
+        <Bubble
+          {...props}
+          textStyle={styles.bubbleTextStyle}
+          wrapperStyle={styles.bubbleWrapperStyle}
+        />
+        {sources.length > 0 && props.currentMessage?.user._id === 0 && (
+          <TouchableOpacity
+            onLongPress={() => setIsOverlayVisible(true)}
+            onPressOut={() => setIsOverlayVisible(false)}>
+            <Image
+              style={styles.infoImage}
+              source={require('../../assets/infoIcon.png')}
+            />
+          </TouchableOpacity>
+        )}
+      </View>
+    );
+  };
 
   const renderAvatar = (props) => {
     return (
@@ -183,6 +257,37 @@ export default function Chat() {
         renderChatFooter={renderChatFooter}
         renderAvatar={renderAvatar}
         renderAvatarOnTop={true}
+      />
+      <Overlay
+        isVisible={isOverlayVisible}
+        onBackdropPress={() => setIsOverlayVisible(false)}
+        backdropStyle={{backgroundColor: 'rgba(0, 0, 0, 0.8)'}} // More opaque
+        overlayStyle={{
+          backgroundColor: 'gray',
+          borderRadius: 10,
+          padding: 20,
+          width: '80%',
+          maxHeight: '50%',
+        }}>
+        <Text>
+          This message used RAG, here are the sources for this message:
+        </Text>
+        <FlatList
+          data={sources}
+          renderItem={({item}) => (
+            <View
+              style={{
+                flexDirection: 'row',
+                alignItems: 'flex-start',
+                marginBottom: 5,
+              }}>
+              <Text style={{marginRight: 10, color: white}}>•</Text>
+              <Text style={{color: white}}>{item}</Text>
+            </View>
+          )}
+          keyExtractor={(item, index) => index.toString()}
+        />
+      </Overlay>
         />
     </View>
   );
@@ -245,6 +350,11 @@ const styles = StyleSheet.create({
   composerStyle: {
     flex: 1,
   },
+  infoImage: {
+    width: 25,
+    height: 25,
+    marginTop: 'auto',
+    bottom: 0,
   avatarImage: {
     width: 30, 
     height: 30,
