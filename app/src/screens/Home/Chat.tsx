@@ -1,6 +1,6 @@
 import React, { useEffect } from 'react';
 import { View, StyleSheet, Button, TextInput, Text, TouchableOpacity, Image } from 'react-native';
-import { GiftedChat, IMessage, Composer, InputToolbar, Send } from 'react-native-gifted-chat';
+import { GiftedChat, IMessage, Composer, InputToolbar, Send, Bubble } from 'react-native-gifted-chat';
 import { useAppDispatch, useAppSelector } from '@providers/ChatStore';
 import { addMessage, getConversation } from '../../state/conversation/conversationSlice';
 import chatApi from '@api/chatApi';
@@ -93,7 +93,6 @@ export default function Chat() {
   const renderSend = (props) => {
     return (
       <TouchableOpacity>
-
       <Send {...props} containerStyle={styles.renderSend}>
         <Image source={require('../../assets/send.png')} style={styles.sendImage} />
       </Send>
@@ -140,6 +139,15 @@ export default function Chat() {
       <View style={{height:80}}></View>
     )
   }
+
+  const renderBubble = (props) => {
+    return (
+      <Bubble {...props}
+      textStyle={ styles.bubbleTextStyle }
+      wrapperStyle={ styles.bubbleWrapperStyle }
+      />
+  );
+  }
   
   return (
     <View style={styles.container}>
@@ -150,22 +158,29 @@ export default function Chat() {
         renderInputToolbar={renderInputToolbar} // Use CustomInputToolbar
         renderComposer={renderComposer} // Use CustomInputToolbar
         renderSend={renderSend}
+        renderBubble={renderBubble}
         alwaysShowSend={true}
         renderChatFooter={renderChatFooter}
         />
     </View>
   );
 }
+const primaryColor = '#05490F';
+const secondaryColor = '#121F33';
+const red = '#C62828';
+const white = "#FFFFFF";
+const black = "#030C1A";
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
+    backgroundColor: black
   },
   responseButtonText: { 
-    color: 'white' 
+    color: white
   },
   responseButton: {
-    backgroundColor: 'green',
+    backgroundColor: primaryColor,
     padding: 10,
     borderRadius: 10,
     margin: 5,
@@ -175,8 +190,7 @@ const styles = StyleSheet.create({
     marginRight: 15,
     marginBottom: 10,
     marginTop: 30,
-    borderWidth: 0.5,
-    borderColor: 'grey',
+    borderWidth: 0,
     borderRadius: 25
   },
   sendImage: {
@@ -184,4 +198,24 @@ const styles = StyleSheet.create({
     height: 30,
     margin: 10,
   },
+  bubbleTextStyle: {
+    left: {
+      color: 'white',
+      fontFamily: "Roboto"
+    },
+    right: {
+      color: 'white',
+      fontFamily: "Roboto"
+    }
+  },
+  bubbleWrapperStyle: {
+    left: {
+      backgroundColor: secondaryColor,
+      color: white,
+    },
+    right: {
+      backgroundColor: primaryColor,
+      color: white
+    }
+    }
 });
