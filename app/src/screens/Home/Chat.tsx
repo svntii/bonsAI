@@ -1,6 +1,6 @@
 import React, { useEffect } from 'react';
-import { View, StyleSheet, Button, TextInput, Text, TouchableOpacity } from 'react-native';
-import { GiftedChat, IMessage } from 'react-native-gifted-chat';
+import { View, StyleSheet, Button, TextInput, Text, TouchableOpacity, Image } from 'react-native';
+import { GiftedChat, IMessage, Composer, InputToolbar, Send } from 'react-native-gifted-chat';
 import { useAppDispatch, useAppSelector } from '@providers/ChatStore';
 import { addMessage, getConversation } from '../../state/conversation/conversationSlice';
 import chatApi from '@api/chatApi';
@@ -87,50 +87,72 @@ export default function Chat() {
     }
   };
   
+  const renderInputToolbar = (props) => {
+    return <InputToolbar {...props} containerStyle={styles.inputToolbar} />
+  }
+  const renderSend = (props) => {
+    return (
+      <TouchableOpacity>
 
-  // user response suggestions
-  const CustomComposer = (props) => (
+      <Send {...props} containerStyle={styles.renderSend}>
+        <Image source={require('../../assets/send.png')} style={styles.sendImage} />
+      </Send>
+      </TouchableOpacity>
+
+    );
+  }
+
+  const renderComposer = (props) => {
+    return (
     <View style={{ flex: 1 }}>
+
       <View style={{ flexDirection: 'row', justifyContent: 'space-around', padding: 5 }}>
-        {/* Example response suggestion buttons */}
+        {/* Touchable components */}
         <TouchableOpacity
-          style={{ backgroundColor: 'green', padding: 10, borderRadius: 10 }}
+          style={styles.responseButton}
           onPress={() => handleSendResponse('Yes', internalId)}
         >
-          <Text style={{ color: 'white' }}>Yes</Text>
+          <Text style={styles.responseButtonText}>Yes</Text>
         </TouchableOpacity>
         <TouchableOpacity
-          style={{ backgroundColor: 'green', padding: 10, borderRadius: 10 }}
+          style={styles.responseButton}
           onPress={() => handleSendResponse('No', internalId)}
         >
-          <Text style={{ color: 'white' }}>No</Text>
+          <Text style={styles.responseButtonText}>No</Text>
         </TouchableOpacity>
         <TouchableOpacity
-          style={{ backgroundColor: 'green', padding: 10, borderRadius: 10 }}
+          style={styles.responseButton}
           onPress={() => handleSendResponse('Maybe', internalId)}
         >
-          <Text style={{ color: 'white' }}>Maybe</Text>
+          <Text style={styles.responseButtonText}>Maybe</Text>
         </TouchableOpacity>
       </View>
-      <TextInput
+      <Composer
         {...props}
-        placeholder="Type a message..."
-        multiline={true}
-        style={{ flex: 1, minHeight: 40, borderWidth: 1, borderColor: '#ccc', padding: 10 }}
       />
     </View>
-  );
-  
+      
+    );
+  };
 
+  const renderChatFooter = () => {
+    return(
+      <View style={{height:80}}></View>
+    )
+  }
+  
   return (
     <View style={styles.container}>
       <GiftedChat
         messages={currentConversation.messages}
         onSend={onSend}
         user={{ _id: internalId }} // Set the user ID to represent the current user (e.g., ID 1)
-        renderComposer={CustomComposer}
-        inverted={true} // Set the inverted prop to true to display the chat messages in reverse order
-      />
+        renderInputToolbar={renderInputToolbar} // Use CustomInputToolbar
+        renderComposer={renderComposer} // Use CustomInputToolbar
+        renderSend={renderSend}
+        alwaysShowSend={true}
+        renderChatFooter={renderChatFooter}
+        />
     </View>
   );
 }
@@ -138,5 +160,28 @@ export default function Chat() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
+  },
+  responseButtonText: { 
+    color: 'white' 
+  },
+  responseButton: {
+    backgroundColor: 'green',
+    padding: 10,
+    borderRadius: 10,
+    margin: 5,
+  },
+  inputToolbar: {
+    marginLeft: 15,
+    marginRight: 15,
+    marginBottom: 10,
+    marginTop: 30,
+    borderWidth: 0.5,
+    borderColor: 'grey',
+    borderRadius: 25
+  },
+  sendImage: {
+    width: 30,
+    height: 30,
+    margin: 10,
   },
 });
