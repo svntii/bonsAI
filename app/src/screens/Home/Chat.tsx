@@ -32,7 +32,6 @@ import {
   ChatResponseDTO,
   initChatResponseDTO,
 } from '@api/dto/ChatDTO';
-import {BlurView} from '@react-native-community/blur';
 
 export default function Chat() {
   const currentConversation = useAppSelector(
@@ -74,6 +73,7 @@ export default function Chat() {
       const response: ChatResponseDTO = await chatApi.postChatMessage(request);
       handleSendResponse(response.response, 0); // Send the bot's response to the chat
       updateState(response.suggestedResponses, response.sources);
+      console.log('Chat response:', response);
     } catch (error) {
       console.error('Error requesting chat response:', error);
     }
